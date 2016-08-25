@@ -1,9 +1,9 @@
 package ensharp.goldensignal;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
 import android.os.Bundle;
 
-public class BluetoothRegister extends AppCompatActivity {
+public class BluetoothRegister extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

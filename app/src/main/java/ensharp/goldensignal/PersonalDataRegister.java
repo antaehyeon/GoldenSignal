@@ -1,9 +1,9 @@
 package ensharp.goldensignal;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
 import android.os.Bundle;
 
-public class PersonalDataRegister extends AppCompatActivity {
+public class PersonalDataRegister extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
