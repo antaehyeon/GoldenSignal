@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class PersonalDataRegister extends Activity {
+public class PersonalDataRegister extends Activity implements  AdapterView.OnItemSelectedListener {
     EditText input_ID, input_Age;
     Button btn_send;
 
@@ -61,13 +61,13 @@ public class PersonalDataRegister extends Activity {
     }
 
     //혈액형을 눌렀을때 토스트창을 띄우기 위해
-    //@Override
+    @Override
     public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
         // TODO Auto-generated method stub
         //Toast.makeText(this, arraylist.get(arg2), Toast.LENGTH_LONG).show();//해당목차눌렸을때
     }
 
-    //@Override
+    @Override
     public void onNothingSelected(AdapterView<?> arg0) {
         // TODO Auto-generated method stub
     }
