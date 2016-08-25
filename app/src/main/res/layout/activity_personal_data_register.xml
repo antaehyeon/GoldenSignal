@@ -9,4 +9,121 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="ensharp.goldensignal.PersonalDataRegister">
 
+    <TextView
+        android:id="@+id/ID_Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:text="이름" />
+
+    <EditText
+        android:id="@+id/input_ID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ID_Text"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:ems="10" />
+
+
+    <TextView
+        android:id="@+id/Sex_Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="성별"
+        android:layout_below="@+id/input_ID"
+        android:layout_alignStart="@+id/ID_Text" />
+
+    <RadioGroup
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/Sex_Text"
+        android:layout_alignParentStart="true"
+        android:gravity="center_horizontal"
+        android:id="@+id/radioGroup">
+
+        <RadioButton
+            android:id="@+id/Men"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="남자" />
+
+        <RadioButton
+            android:id="@+id/Women"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="여자" />
+
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/Age_Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="나이"
+        android:layout_below="@+id/radioGroup"
+        android:layout_alignStart="@+id/Sex_Text" />
+
+    <EditText
+        android:id="@+id/input_Age"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Age_Text"
+        android:layout_centerHorizontal="true"
+        android:inputType="number"
+        android:gravity="center_horizontal"
+        android:ems="10" />
+
+    <TextView
+        android:id="@+id/Blood_Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="혈액형"
+        android:layout_below="@+id/input_Age"
+        android:layout_alignStart="@+id/Sex_Text" />
+
+
+
+    <RadioGroup
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/radioGroup1"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/Blood_Text"
+        android:layout_alignParentStart="true">
+
+        <RadioButton
+            android:id="@+id/rh_plus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rh+" />
+
+        <RadioButton
+            android:id="@+id/rh_minus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rh-" />
+    </RadioGroup>
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/radioGroup1"
+        android:gravity="center_horizontal"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="확인"
+        android:id="@+id/btn_send"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+
 </RelativeLayout>
