@@ -2,6 +2,8 @@ package ensharp.goldensignal;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -34,4 +36,17 @@ public class PersonalDataRegister extends Activity {
         spinner = (Spinner)findViewById(R.id.spinner);
         btn_send = (Button) findViewById(R.id.btn_send);
     }
+
+    //혈액형을 눌렀을때 토스트창을 띄우기 위해
+    @Override
+    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+        // TODO Auto-generated method stub
+        //Toast.makeText(this, arraylist.get(arg2), Toast.LENGTH_LONG).show();//해당목차눌렸을때
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
+        // TODO Auto-generated method stub
+    }
+
 }
