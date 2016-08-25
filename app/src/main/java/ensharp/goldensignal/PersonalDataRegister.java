@@ -1,6 +1,7 @@
 package ensharp.goldensignal;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -10,6 +11,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 
+import java.util.ArrayList;
+
 public class PersonalDataRegister extends Activity {
     EditText input_ID, input_Age;
     Button btn_send;
@@ -17,6 +20,12 @@ public class PersonalDataRegister extends Activity {
     RadioGroup radioGroup, radioGroup1;
     RadioButton men, women, rh_plus, rh_minus;
     Spinner spinner;
+
+
+    SharedPreferences setting;
+    SharedPreferences.Editor editor;
+    ArrayList<String> arraylist;
+
 
 
     @Override
@@ -35,6 +44,9 @@ public class PersonalDataRegister extends Activity {
         rh_minus = (RadioButton)findViewById(R.id.rh_minus);
         spinner = (Spinner)findViewById(R.id.spinner);
         btn_send = (Button) findViewById(R.id.btn_send);
+
+        setting = getSharedPreferences("user_info", MODE_PRIVATE);
+        editor= setting.edit();
     }
 
     //혈액형을 눌렀을때 토스트창을 띄우기 위해
