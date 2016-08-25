@@ -5,11 +5,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -33,6 +35,8 @@ public class PersonalDataRegister extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_data_register);
 
+        using_spinner();
+
         //layout 사용할 변수 선언
         input_ID = (EditText) findViewById(R.id.input_ID);
         input_Age = (EditText) findViewById(R.id.input_Age);
@@ -47,6 +51,14 @@ public class PersonalDataRegister extends Activity {
 
         setting = getSharedPreferences("user_info", MODE_PRIVATE);
         editor= setting.edit();
+
+
+        btn_send.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+
+                save_userInfo();
+            }
+        }) ;
     }
 
     //혈액형을 눌렀을때 토스트창을 띄우기 위해
@@ -59,6 +71,45 @@ public class PersonalDataRegister extends Activity {
     @Override
     public void onNothingSelected(AdapterView<?> arg0) {
         // TODO Auto-generated method stub
+    }
+
+    // 입력한 값들을 저장하는 부분
+    public  void save_userInfo()
+    {
+        String ID = input_ID.getText().toString();
+        String Age = input_Age.getText().toString();
+
+        editor.putString("이름", ID);
+        editor.putString("나이", Age);
+        editor.putBoolean("남",men.isChecked());
+        editor.putBoolean("여",women.isChecked());
+        editor.putBoolean("RH+",rh_plus.isChecked());
+        editor.putBoolean("RH-",rh_minus.isChecked());
+        editor.putString("혈액형", spinner.getSelectedItem().toString());
+
+        editor.putBoolean("Auto_Login_enabled", true);
+        editor.commit();
+
+        Toast.makeText(PersonalDataRegister.this, "저장됨", Toast.LENGTH_SHORT).show();
+    }
+
+    // 스피너 (혈액형 정보) 정보 등록& 선언
+    public void using_spinner()
+    {
+        //스피너에 사용될 아이템 정보
+        arraylist = new ArrayList<String>();
+        arraylist.add("A");
+        arraylist.add("B");
+        arraylist.add("AB");
+        arraylist.add("O");
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, arraylist);
+        //스피너 속성
+        Spinner sp = (Spinner) this.findViewById(R.id.spinner);
+        sp.setPrompt("선택해주세요"); // 스피너 제목
+        sp.setAdapter(adapter);
+        sp.setOnItemSelectedListener(this);
+
     }
 
 }
