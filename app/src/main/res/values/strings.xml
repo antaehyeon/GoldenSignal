@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">GoldenSignal</string>
+    <string name="time">Time</string>
+    <string name="waiting_for_gps">GPS 신호를 기다리고 있습니다...</string>
+    <string name="gps_disabled">GPS 사용불가</string>
+    <string name="please_enable_gps">이 앱 사용을 위해 GPS를 켜주십시오.</string>
+    <string name="running">주행중</string>
+    <string name="notification">현재 속도 : %1$s, 이동거리 : %2$s.</string>
+    <string name="userinfo">내 정보</string>
+    <string name="phonenumber">연락처 설정</string>
+    <string name="noti_id" translatable="false">GoldenSignalisanid</string>
 </resources>

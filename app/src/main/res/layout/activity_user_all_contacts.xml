@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/settingstoolbar"
+        style="@style/ToolBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:elevation="5dp"
+        android:minHeight="@dimen/abc_action_bar_default_height_material"
+        android:layout_alignParentTop="true">
+
+    </android.support.v7.widget.Toolbar>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="450dp"
+        android:id="@+id/contactlistview"
+        android:layout_centerVertical="true"
+        android:layout_alignStart="@+id/settingstoolbar" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="저장하기"
+        android:id="@+id/findSelected"
+        android:layout_below="@+id/contactlistview"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>

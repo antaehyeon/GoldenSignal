@@ -85,7 +85,6 @@ public class GpsServices extends Service implements LocationListener, Listener {
     public void updateNotification(boolean asData){
         Notification.Builder builder = new Notification.Builder(getBaseContext())
                 .setContentTitle(getString(R.string.running))
-                .setSmallIcon(R.drawable.ic_notification)
                 .setContentIntent(contentIntent);
 
         if(asData){
