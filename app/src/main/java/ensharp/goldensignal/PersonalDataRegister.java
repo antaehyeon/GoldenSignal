@@ -23,12 +23,9 @@ public class PersonalDataRegister extends Activity {
     RadioButton men, women, rh_plus, rh_minus;
     Spinner spinner;
 
-
     SharedPreferences setting;
     SharedPreferences.Editor editor;
     ArrayList<String> arraylist;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +49,8 @@ public class PersonalDataRegister extends Activity {
         setting = getSharedPreferences("user_info", MODE_PRIVATE);
         editor= setting.edit();
 
+        get_userInfo(); // 저장된 정보 불러오기
+
 
         btn_send.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
@@ -62,13 +61,13 @@ public class PersonalDataRegister extends Activity {
     }
 
     //혈액형을 눌렀을때 토스트창을 띄우기 위해
-    @Override
+    //@Override
     public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
         // TODO Auto-generated method stub
         //Toast.makeText(this, arraylist.get(arg2), Toast.LENGTH_LONG).show();//해당목차눌렸을때
     }
 
-    @Override
+    //@Override
     public void onNothingSelected(AdapterView<?> arg0) {
         // TODO Auto-generated method stub
     }
@@ -91,6 +90,20 @@ public class PersonalDataRegister extends Activity {
         editor.commit();
 
         Toast.makeText(PersonalDataRegister.this, "저장됨", Toast.LENGTH_SHORT).show();
+    }
+
+    //만약 저장된 정보가 아무것도 없을 경우, 임의의 값들로 설정해서 보여줌
+    public  void get_userInfo()
+    {
+        input_ID.setText(setting.getString("이름", ""));
+        input_Age.setText(setting.getString("나이", ""));
+
+        men.setChecked(setting.getBoolean("남", true));
+        women.setChecked(setting.getBoolean("여", false));
+
+        rh_plus.setChecked(setting.getBoolean("RH+", true));
+        rh_minus.setChecked(setting.getBoolean("RH-", false));
+
     }
 
     // 스피너 (혈액형 정보) 정보 등록& 선언
