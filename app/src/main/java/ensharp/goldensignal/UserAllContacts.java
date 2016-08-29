@@ -242,14 +242,6 @@ public class UserAllContacts extends ActionBarActivity {
         return managedQuery(uri, projection, null, null, sortOrder);
     }
 
-    @Override
-    public void onBackPressed() {
-
-        Intent intent = new Intent(this, UserFavoriteContacts.class);
-        finish();
-        startActivity(intent);
-    }
-
     public class Contacts {
 
         String name;
@@ -285,6 +277,14 @@ public class UserAllContacts extends ActionBarActivity {
         public void setisChecked(boolean isChecked) {
             this.isChecked = isChecked;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        Intent intent = new Intent(this, UserFavoriteContacts.class);
+        finish();
+        startActivity(intent);
     }
 
     @Override

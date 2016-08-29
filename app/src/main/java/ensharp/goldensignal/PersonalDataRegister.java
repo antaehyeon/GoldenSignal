@@ -1,8 +1,9 @@
 package ensharp.goldensignal;
 
-import android.app.Activity;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,7 +16,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class PersonalDataRegister extends Activity implements  AdapterView.OnItemSelectedListener {
+public class PersonalDataRegister  extends ActionBarActivity implements  AdapterView.OnItemSelectedListener {
     EditText input_ID, input_Age;
     Button btn_send;
 
@@ -23,17 +24,22 @@ public class PersonalDataRegister extends Activity implements  AdapterView.OnIte
     RadioButton men, women, rh_plus, rh_minus;
     Spinner spinner;
 
-    SharedPreferences setting;
-    SharedPreferences.Editor editor;
+    //SharedPreferences setting;
+    //SharedPreferences.Editor editor;
     ArrayList<String> arraylist;
+    ensharp.goldensignal.SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_data_register);
+        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.settingstoolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         using_spinner();
-
+        pref = new ensharp.goldensignal.SharedPreferences(this);
         //layout 사용할 변수 선언
         input_ID = (EditText) findViewById(R.id.input_ID);
         input_Age = (EditText) findViewById(R.id.input_Age);
@@ -46,8 +52,8 @@ public class PersonalDataRegister extends Activity implements  AdapterView.OnIte
         spinner = (Spinner)findViewById(R.id.spinner);
         btn_send = (Button) findViewById(R.id.btn_send);
 
-        setting = getSharedPreferences("user_info", MODE_PRIVATE);
-        editor= setting.edit();
+        //setting = getSharedPreferences("user_info", MODE_PRIVATE);
+        //editor= setting.edit();
 
         get_userInfo(); // 저장된 정보 불러오기
 
@@ -78,32 +84,50 @@ public class PersonalDataRegister extends Activity implements  AdapterView.OnIte
         String ID = input_ID.getText().toString();
         String Age = input_Age.getText().toString();
 
-        editor.putString("이름", ID);
-        editor.putString("나이", Age);
-        editor.putBoolean("남",men.isChecked());
-        editor.putBoolean("여",women.isChecked());
-        editor.putBoolean("RH+",rh_plus.isChecked());
-        editor.putBoolean("RH-",rh_minus.isChecked());
-        editor.putString("혈액형", spinner.getSelectedItem().toString());
+        pref.putValue("이름", ID, "user_info");
+        pref.putValue("나이", Age, "user_info");
+        pref.putValue("남", men.isChecked(),"user_info");
+        pref.putValue("여", women.isChecked(), "user_info");
+        pref.putValue("RH+", rh_plus.isChecked(),"user_info");
+        pref.putValue("RH-", rh_minus.isChecked(), "user_info");
+        pref.putValue("RH-", spinner.getSelectedItem().toString(), "user_info");
+        pref.putValue("Auto_Login_enabled", true, "user_info");
+       // editor.putBoolean("Auto_Login_enabled", true);
+//        editor.putString("이름", ID);
+//        editor.putString("나이", Age);
+      //  editor.putBoolean("남",men.isChecked());
+       // editor.putBoolean("여",women.isChecked());
+       // editor.putBoolean("RH+",rh_plus.isChecked());
+       // editor.putBoolean("RH-",rh_minus.isChecked());
+        //editor.putString("혈액형", spinner.getSelectedItem().toString());
 
-        editor.putBoolean("Auto_Login_enabled", true);
-        editor.commit();
-
-        Toast.makeText(PersonalDataRegister.this, "저장됨", Toast.LENGTH_SHORT).show();
+       // editor.putBoolean("Auto_Login_enabled", true);
+        Intent intent = new Intent(this, MainActivity.class);
+        Toast.makeText(PersonalDataRegister.this, "정보가 저장되었습니다!", Toast.LENGTH_SHORT).show();
+        finish();
+        startActivity(intent);
     }
 
     //만약 저장된 정보가 아무것도 없을 경우, 임의의 값들로 설정해서 보여줌
     public  void get_userInfo()
     {
-        input_ID.setText(setting.getString("이름", ""));
-        input_Age.setText(setting.getString("나이", ""));
+        input_ID.setText(pref.getValue("이름","","user_info"));
+        input_Age.setText(pref.getValue("나이", "","user_info"));
 
-        men.setChecked(setting.getBoolean("남", true));
-        women.setChecked(setting.getBoolean("여", false));
+        men.setChecked(pref.getValue("남", true, "user_info"));
+        women.setChecked(pref.getValue("여", false, "user_info"));
 
-        rh_plus.setChecked(setting.getBoolean("RH+", true));
-        rh_minus.setChecked(setting.getBoolean("RH-", false));
+        rh_plus.setChecked(pref.getValue("RH+", true, "user_info"));
+        rh_minus.setChecked(pref.getValue("RH-", false, "user_info"));
 
+//        input_ID.setText(setting.getString("이름", ""));
+//        input_Age.setText(setting.getString("나이", ""));
+//
+//        men.setChecked(setting.getBoolean("남", true));
+//        women.setChecked(setting.getBoolean("여", false));
+//
+//        rh_plus.setChecked(setting.getBoolean("RH+", true));
+//        rh_minus.setChecked(setting.getBoolean("RH-", false));
     }
 
     // 스피너 (혈액형 정보) 정보 등록& 선언
@@ -122,7 +146,28 @@ public class PersonalDataRegister extends Activity implements  AdapterView.OnIte
         sp.setPrompt("선택해주세요"); // 스피너 제목
         sp.setAdapter(adapter);
         sp.setOnItemSelectedListener(this);
+    }
 
+    @Override
+    public void onBackPressed() {
+
+        Intent intent = new Intent(this, MainActivity.class);
+        finish();
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        //int id = item.getItemId();
+        //noinspection SimplifiableIfStatement
+        //if (id == R.id.action_phonenumber) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+        return true;
+        //  }
+        //return super.onOptionsItemSelected(item);
     }
 
 }
