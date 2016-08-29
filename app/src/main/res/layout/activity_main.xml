@@ -23,24 +23,50 @@
         android:background="#FFFFFFFF"
         android:gravity="center">
 
-        <RelativeLayout
-            android:layout_width="280dp"
-            android:layout_height="280dp"
-            android:background="@drawable/circle_style"
-            android:gravity="center">
-
-            <TextView
-                android:id="@+id/currentSpeed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <RelativeLayout
+                android:id="@+id/waiting"
+                android:layout_width="280dp"
+                android:layout_height="280dp"
                 android:layout_gravity="center"
+                android:background="@drawable/circle_style"
+                android:gravity="center">
+                <TextView
+                    android:id="@+id/beforestart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="Golden Signal"
+                    android:textColor="@android:color/black"
+                    android:textSize="30sp" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/driving"
+                android:layout_width="280dp"
+                android:layout_height="280dp"
+                android:layout_gravity="center"
+                android:background="@drawable/circle_style"
                 android:gravity="center"
-                android:text=""
-                android:textColor="@android:color/black"
-                android:textSize="100sp" />
-        </RelativeLayout>
+                android:visibility="invisible">
+
+                <TextView
+                    android:id="@+id/currentSpeed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text=""
+                    android:textColor="@android:color/black"
+                    android:textSize="100sp" />
+            </RelativeLayout>
+        </FrameLayout>
     </LinearLayout>
 
     <RelativeLayout
@@ -70,9 +96,9 @@
             android:layout_height="match_parent">
 
             <RelativeLayout
+                android:id="@+id/button_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/button_layout"
                 android:visibility="visible">
 
                 <Button
@@ -99,9 +125,9 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/status_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/status_layout"
                 android:visibility="gone">
 
                 <TextView

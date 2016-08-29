@@ -12,7 +12,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -38,12 +37,12 @@ public class DiscoveryActivity extends ListActivity
             {
                 if (_discoveryFinished)
                 {
-                    break;
-                }
-                try
-                {
-                    Thread.sleep(100);
-                }
+                break;
+            }
+            try
+            {
+                Thread.sleep(100);
+            }
                 catch (InterruptedException e){}
             }
         }
@@ -77,15 +76,15 @@ public class DiscoveryActivity extends ListActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
         setContentView(R.layout.discovery);
-
-		/* BT isEnable */
-        if (!_bluetooth.isEnabled())
-        {
-            finish();
-            return;
-        }
+//
+//		/* BT isEnable */
+//        if (!_bluetooth.isEnabled())
+//        {
+//            finish();
+//            return;
+//        }
 		/* Register Receiver*/
         IntentFilter discoveryFilter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(_discoveryReceiver, discoveryFilter);
