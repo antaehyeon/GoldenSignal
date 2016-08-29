@@ -2,7 +2,6 @@ package ensharp.goldensignal;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 
 /**
  * Created by Semin on 2016-08-23.
