@@ -25,11 +25,38 @@
         </activity>
         <activity android:name=".SplashActvity" />
         <activity android:name=".PersonalDataRegister" />
-        <activity android:name=".BluetoothRegister"/>
+
         <activity android:name=".UserAllContacts"/>
         <activity android:name=".UserFavoriteContacts"/>
         <activity android:name=".Send_MMS"></activity>
 
+
+        <activity android:name=".BluetoothRegister">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".DiscoveryActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".ClientSocketActivity"
+            android:label="ClientToBluetoothBee"
+            android:windowSoftInputMode="stateVisible|adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
     </application>
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
 </manifest>
