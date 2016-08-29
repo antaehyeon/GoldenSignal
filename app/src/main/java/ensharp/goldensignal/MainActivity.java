@@ -284,9 +284,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                         //textView.setText(myPhoneNumber);
 
 
-                        String total = "사고자 : " + strName + '\n' + "연락처 : " + myPhoneNumber + '\n' + "사고가 났습니다. 도와주세요.";
+                        String total = "사고자 : " + strName + '\n' + "연락처 : " + myPhoneNumber + '\n' + "사고가 났습니다. 도와주세요." + '\n' + "위도 : " + myLocation.getLatitude() + '\n' + "경도 : " + myLocation.getAltitude();
 
-                        if (total.length()>0 ){ //smsNum.length()>0 &&smsText.length()>0
+                        if (total.length()>0  && (0.01 <= mySpeed )&&(mySpeed <= 1.0)){ // 속도 범위 추가 (상황에 따라서 다시 바꿀 필요 있음
                             sendSMS("01048862255", total);
                         }else{
                             Toast.makeText(MainActivity.this , "모두 입력해 주세요", Toast.LENGTH_SHORT).show();
