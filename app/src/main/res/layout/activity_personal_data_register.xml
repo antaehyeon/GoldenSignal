@@ -23,13 +23,122 @@
         android:id="@+id/relativeLayout" />
 
     <TextView
+        android:id="@+id/ID_Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="내 정보"
-        android:id="@+id/textView"
         android:layout_below="@+id/relativeLayout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="147dp" />
+        android:text="이름"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:id="@+id/input_ID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:ems="10"
+        android:layout_below="@+id/ID_Text"
+        android:layout_centerHorizontal="true" />
+
+
+    <TextView
+        android:id="@+id/Sex_Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="성별"
+        android:layout_below="@+id/input_ID"
+        android:layout_centerHorizontal="true" />
+
+    <RadioGroup
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentStart="true"
+        android:gravity="center_horizontal"
+        android:id="@+id/radioGroup"
+        android:layout_below="@+id/Sex_Text"
+        android:layout_centerHorizontal="true">
+
+        <RadioButton
+            android:id="@+id/Men"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="남자" />
+
+        <RadioButton
+            android:id="@+id/Women"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="여자" />
+
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/Age_Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="나이"
+        android:layout_below="@+id/radioGroup"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:id="@+id/input_Age"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:gravity="center_horizontal"
+        android:ems="10"
+        android:layout_below="@+id/Age_Text"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/Blood_Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="혈액형"
+        android:layout_below="@+id/input_Age"
+        android:layout_centerHorizontal="true" />
+
+
+
+    <RadioGroup
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/radioGroup1"
+        android:gravity="center_horizontal"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/Blood_Text"
+        android:layout_centerHorizontal="true">
+
+        <RadioButton
+            android:id="@+id/rh_plus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rh+" />
+
+        <RadioButton
+            android:id="@+id/rh_minus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rh-" />
+    </RadioGroup>
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/radioGroup1"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="확인"
+        android:id="@+id/btn_send"
+        android:layout_below="@+id/spinner"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
+

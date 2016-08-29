@@ -5,6 +5,11 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
+    <!-- 메세지 권한 설정-->
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,9 +25,10 @@
         </activity>
         <activity android:name=".SplashActvity" />
         <activity android:name=".PersonalDataRegister" />
-        <activity android:name=".BluetoothRegister"></activity>
+        <activity android:name=".BluetoothRegister"/>
         <activity android:name=".UserAllContacts"/>
         <activity android:name=".UserFavoriteContacts"/>
+        <activity android:name=".Send_MMS"></activity>
 
     </application>
 
