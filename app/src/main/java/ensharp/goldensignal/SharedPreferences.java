@@ -28,11 +28,30 @@ public class SharedPreferences {
         editor.commit();
     }
 
+    public void putValue(String key, boolean value, String prefName) {
+        android.content.SharedPreferences pref = mContext.getSharedPreferences(prefName,
+                Activity.MODE_PRIVATE);
+        android.content.SharedPreferences.Editor editor = pref.edit();
+
+        editor.putBoolean(key, value);
+        editor.commit();
+    }
+
     public String getValue(String key, String dftValue, String prefName) {
         android.content.SharedPreferences pref = mContext.getSharedPreferences(prefName,
                 Activity.MODE_PRIVATE);
         try {
             return pref.getString(key, dftValue);
+        } catch (Exception e) {
+            return dftValue;
+        }
+    }
+
+    public boolean getValue(String key, boolean dftValue, String prefName) {
+        android.content.SharedPreferences pref = mContext.getSharedPreferences(prefName,
+                Activity.MODE_PRIVATE);
+        try {
+            return pref.getBoolean(key, dftValue);
         } catch (Exception e) {
             return dftValue;
         }

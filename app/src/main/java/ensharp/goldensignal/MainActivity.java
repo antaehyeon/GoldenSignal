@@ -83,12 +83,20 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private StringBuffer sbu;
     private Context mContext;
     String myPhoneNumber;
+    ensharp.goldensignal.SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mContext = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        pref = new ensharp.goldensignal.SharedPreferences(this);
+
+        if(!pref.getValue("Auto_Login_enabled", false, "user_info")) {
+            Intent intent = new Intent(this, PersonalDataRegister.class);
+            finish();
+            startActivity(intent);
+        }
         data = new Data(onGpsServiceUpdate);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -110,7 +118,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             public void update() {
             }
         };
-
         mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         //status = (TextView) findViewById(R.id.status);
         time = (Chronometer) findViewById(R.id.time);
