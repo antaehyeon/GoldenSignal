@@ -26,6 +26,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <RelativeLayout
                 android:id="@+id/waiting"
                 android:layout_width="280dp"
@@ -33,6 +34,7 @@
                 android:layout_gravity="center"
                 android:background="@drawable/circle_style"
                 android:gravity="center">
+
                 <TextView
                     android:id="@+id/beforestart"
                     android:layout_width="wrap_content"
@@ -44,13 +46,15 @@
                     android:text="Golden Signal"
                     android:textColor="@android:color/black"
                     android:textSize="30sp" />
-               <ImageView
-                   android:layout_width="100dp"
-                   android:layout_height="100dp"
-                   android:layout_centerHorizontal="true"
-                   android:layout_gravity="center"
-                   android:src="@drawable/autobicycle"/>
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:src="@drawable/autobicycle" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:id="@+id/driving"
                 android:layout_width="280dp"
@@ -78,25 +82,24 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="7"
+        android:layout_weight="20"
         android:background="@color/white">
 
-        <Chronometer
-            android:id="@+id/time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:gravity="top"
-            android:text=""
-            android:textColor="@android:color/black"
-            android:textSize="35sp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="'주행 시작' 버튼을 누름과 동시에 서비스가 활성화됩니다. 사고 발생 시 자동신고 서비스가 이루어지니 유의하시기 바랍니다."
+            android:textSize="15dp"/>
+
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="33">
+        android:layout_weight="20">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -106,43 +109,29 @@
                 android:id="@+id/button_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="visible"
-                android:background="@color/white">
+                android:background="@color/white"
+                android:visibility="visible">
 
                 <Button
                     android:id="@+id/start"
                     android:layout_width="300dp"
                     android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/button_style"
                     android:onClick="onStartClick"
                     android:text="주행 시작"
-                    android:textSize="18dp"
-                    android:layout_above="@+id/reset"
-                    android:layout_alignStart="@+id/reset"
-                    android:layout_marginBottom="18dp"
-                    android:layout_alignEnd="@+id/reset" />
+                    android:textSize="18dp" />
 
-                <Button
-                    android:id="@+id/reset"
-                    android:layout_width="300dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@drawable/button_style"
-                    android:onClick="onResetClick"
-                    android:text="초기화"
-                    android:textSize="18dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="24dp" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/status_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone"
-                android:background="@color/white">
+                android:background="@color/white"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/status"

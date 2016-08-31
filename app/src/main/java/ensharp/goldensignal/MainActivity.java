@@ -79,6 +79,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private Context mContext;
     String myPhoneNumber;
     ensharp.goldensignal.SharedPreferences pref;
+    boolean isBluetoothPairing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,18 +88,19 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         setContentView(R.layout.activity_main);
         pref = new ensharp.goldensignal.SharedPreferences(this);
 
-        if(!pref.getValue("Auto_Login_enabled", false, "user_info")) {
+        if (!pref.getValue("Auto_Login_enabled", false, "user_info")) {
             Intent intent = new Intent(this, PersonalDataRegister.class);
             finish();
             startActivity(intent);
         }
+
         data = new Data(onGpsServiceUpdate);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         start = (Button) findViewById(R.id.start);
         //start.setVisibility(View.INVISIBLE); --> 이거 다시 주석해제
-        reset = (Button) findViewById(R.id.reset);
+        //reset = (Button) findViewById(R.id.reset);
         //reset.setVisibility(View.INVISIBLE);
         drivingLayout = (RelativeLayout) findViewById(R.id.driving);
         drivingLayout.setVisibility(View.INVISIBLE);
@@ -115,7 +117,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         };
         mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         //status = (TextView) findViewById(R.id.status);
-        time = (Chronometer) findViewById(R.id.time);
+        //time = (Chronometer) findViewById(R.id.time);
         currentSpeed = (TextView) findViewById(R.id.currentSpeed);
         statusLayout = (RelativeLayout) findViewById(R.id.status_layout);
         //statusLayout.setVisibility(View.VISIBLE);
@@ -176,8 +178,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             Intent intent = new Intent(this, PersonalDataRegister.class);
             startActivity(intent);
             return true;
-        }
-        else if(id == R.id.action_user_favorite_contacts) {
+        } else if (id == R.id.action_user_favorite_contacts) {
             Intent intent = new Intent(this, UserFavoriteContacts.class);
             startActivity(intent);
             return true;
@@ -190,8 +191,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         if (!data.isRunning()) {
             if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 Toast.makeText(this, "단말기 설정에서 '위치 서비스'사용을 허용해주세요", Toast.LENGTH_SHORT).show();
-            }
-            else {
+            } else {
                 if (_bluetooth.isEnabled()) {
                     bluetoothPair();
                     start.setText("주행 종료");
@@ -222,9 +222,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     public void bluetoothPair() {
         //start.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_pause));
         Intent intent = new Intent(this, DiscoveryActivity.class);
-		/* Prompted to select a server to connect */
+        /* Prompted to select a server to connect */
         Toast.makeText(this, "select device to connect", Toast.LENGTH_SHORT).show();
-		/* Select device for list */
+        /* Select device for list */
         startActivityForResult(intent, REQUEST_DISCOVERY);
     }
 
@@ -239,10 +239,13 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             return;
         }
         final BluetoothDevice device = data.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
         new Thread() {
             public void run() {
                 connect(device);
-            };
+            }
+
+            ;
         }.start();
     }
 
@@ -256,7 +259,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             outputStream = socket.getOutputStream();
             int read = -1;
             final byte[] bytes = new byte[2048];
-            for (; (read = inputStream.read(bytes)) > -1;) {
+            for (; (read = inputStream.read(bytes)) > -1; ) {
                 final int count = read;
                 _handler.post(new Runnable() {
                     public void run() {
@@ -294,45 +297,38 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
                         String total = "사고자 : " + strName + '\n' + "연락처 : " + myPhoneNumber + '\n' + "사고가 났습니다. 도와주세요.";
 
-                        if (total.length()>0 ){ //smsNum.length()>0 &&smsText.length()>0
+                        if (total.length() > 0) { //smsNum.length()>0 &&smsText.length()>0
                             sendSMS("01048862255", total);
-                        }else{
-                            Toast.makeText(MainActivity.this , "모두 입력해 주세요", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(MainActivity.this, "모두 입력해 주세요", Toast.LENGTH_SHORT).show();
                         }
 
                     }
                 });
             }
-        }
-
-        catch (IOException e) {
+        } catch (IOException e) {
             finish();
-            return ;
-        }
-
-        finally {
+            return;
+        } finally {
             if (socket != null) {
-                try
-                {
+                try {
                     socket.close();
                     finish();
-                    return ;
-                }
-                catch (IOException e)
-                {
+                    return;
+                } catch (IOException e) {
                 }
             }
         }
     }
 
-    public void sendSMS(String smsNumber, String total){
+    public void sendSMS(String smsNumber, String total) {
         PendingIntent sentIntent = PendingIntent.getBroadcast(this, 0, new Intent("SMS_SENT_ACTION"), 0);
         PendingIntent deliveredIntent = PendingIntent.getBroadcast(this, 0, new Intent("SMS_DELIVERED_ACTION"), 0);
 
         registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                switch(getResultCode()){
+                switch (getResultCode()) {
                     case Activity.RESULT_OK:
                         Toast.makeText(mContext, "SMS 전송 완료", Toast.LENGTH_SHORT).show();
                         break;
@@ -355,7 +351,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                switch (getResultCode()){
+                switch (getResultCode()) {
                     case Activity.RESULT_OK:
                         Toast.makeText(mContext, "SMS 도착완료", Toast.LENGTH_SHORT).show();
                         break;
@@ -376,8 +372,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
         Toast.makeText(this, "MMS 전송완료.", Toast.LENGTH_SHORT).show();
     }
-
-
 
 
 //    public void onResetClick(View v) {
@@ -488,7 +482,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                     //start.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_play));
                     start.setText("주행 시작");
                     drivingLayout.setVisibility(View.INVISIBLE);
-                    data.setRunning(true);
+                    //data.setRunning(true);
                     //status.setText("");
                     //statusLayout.setVisibility(View.GONE);
                     stopService(new Intent(getBaseContext(), GpsServices.class));
@@ -496,7 +490,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                     //reset.setVisibility(View.INVISIBLE);
                     //status.setText(getResources().getString(R.string.waiting_for_fix));
                     //statusLayout.setVisibility(View.VISIBLE);
-                    Toast.makeText(this, "현재 GPS 확인이 불가합니다", Toast.LENGTH_SHORT).show();
+                    if (data.isRunning()) {
+                        Toast.makeText(this, "현재 GPS 확인이 불가합니다", Toast.LENGTH_SHORT).show();
+                    }
                     drivingLayout.setVisibility(View.INVISIBLE);
                     data.setRunning(false);
                     firstfix = true;

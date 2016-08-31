@@ -151,6 +151,7 @@ public class PersonalDataRegister  extends ActionBarActivity implements  Adapter
     @Override
     public void onBackPressed() {
 
+        pref.putValue("Auto_Login_enabled", true, "user_info");
         Intent intent = new Intent(this, MainActivity.class);
         finish();
         startActivity(intent);
@@ -162,6 +163,7 @@ public class PersonalDataRegister  extends ActionBarActivity implements  Adapter
         //int id = item.getItemId();
         //noinspection SimplifiableIfStatement
         //if (id == R.id.action_phonenumber) {
+        pref.putValue("Auto_Login_enabled", true, "user_info");
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();

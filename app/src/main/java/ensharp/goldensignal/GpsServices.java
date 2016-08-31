@@ -88,7 +88,7 @@ public class GpsServices extends Service implements LocationListener, Listener {
                 .setContentIntent(contentIntent);
 
         if(asData){
-            builder.setContentText(String.format(getString(R.string.notification), data.getMaxSpeed(), data.getDistance()));
+            builder.setContentText("자동신고서비스가 활성화되어 있습니다.");
         }else{
             builder.setContentText(String.format(getString(R.string.notification), '-', '-'));
         }
