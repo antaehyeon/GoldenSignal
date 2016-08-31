@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class UserAllContacts extends ActionBarActivity {
 
@@ -32,6 +33,7 @@ public class UserAllContacts extends ActionBarActivity {
     int limit = 0;
     MyCustomAdapter dataAdapter = null;
     SharedPreferences pref;
+    TextView limitTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +61,8 @@ public class UserAllContacts extends ActionBarActivity {
         }
         limit = 3 - count;
         Cursor cursor = getURI();  // 전화번호부 가져오기
-
+        limitTxt = (TextView) findViewById(R.id.limit_num);
+        limitTxt.setText(limit+"명");
         String[] bbStr = cursor.getColumnNames();
         for (int i = 0; i < bbStr.length; i++)
             // 각각의 컬럼 이름 확인
@@ -72,7 +75,7 @@ public class UserAllContacts extends ActionBarActivity {
                 // 요소값 얻기
                 name = cursor.getString(1);  //이름
                 //String  += "\n";
-                phoneNumber = cursor.getString(2);  //전화번호
+                phoneNumber = makePhoneNumber(cursor.getString(2));
                 //count++;
                 for (int i = 0; i < 3; i++) {
                     if (name.equals(existList.get(i).name) && phoneNumber.equals(existList.get(i).phoneNum)) {
@@ -90,6 +93,14 @@ public class UserAllContacts extends ActionBarActivity {
         checkButtonClick();
 
     }
+
+    public static String makePhoneNumber(String phoneNumber) {
+
+        String regEx = "(\\d{3})(\\d{3,4})(\\d{4})";
+        if(!Pattern.matches(regEx, phoneNumber)) return null;
+        return phoneNumber.replaceAll(regEx, "$1-$2-$3");
+    }
+
 
     private void displayListView() {
 

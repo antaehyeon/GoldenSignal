@@ -1,19 +1,24 @@
 package ensharp.goldensignal;
 
-import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,10 +32,24 @@ public class UserFavoriteContacts extends ActionBarActivity {
     int count;
     ArrayList<Contacts> saveList;
     SharedPreferences pref;
-    MyCustomAdapter dataAdapter = null;
+    //MyCustomAdapter dataAdapter = null;
     ListView listView;
     View recentView;
     boolean unChecked;
+    TextView personName;
+    ImageView personFace;
+    Bitmap personImage;
+
+    RelativeLayout imageLayout1;
+    RelativeLayout imageLayout2;
+    RelativeLayout imageLayout3;
+    RelativeLayout pushLayout1;
+    RelativeLayout pushLayout2;
+    RelativeLayout pushLayout3;
+    ImageView image;
+    Bitmap bitmapImage;
+    boolean[] clickable;
+    int pushedIndex = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,130 +74,339 @@ public class UserFavoriteContacts extends ActionBarActivity {
                 saveList.add(new Contacts(name, phoneNumber, false));
         }
 
-        displayListView();
+        clickable = new boolean[3];
+        imageLayout1 = (RelativeLayout) findViewById(R.id.image_layout1);
+        imageLayout2 = (RelativeLayout) findViewById(R.id.image_layout2);
+        imageLayout3 = (RelativeLayout) findViewById(R.id.image_layout3);
+        pushLayout1 = (RelativeLayout) findViewById(R.id.push_layout1);
+        pushLayout2 = (RelativeLayout) findViewById(R.id.push_layout2);
+        pushLayout3 = (RelativeLayout) findViewById(R.id.push_layout3);
+
+        imageSetting();
+        imageButtonClick();
         checkButtonClick();
     }
 
-    private void displayListView() {
+    public boolean checkMyTeam(String name, int index) {
 
-        //create an ArrayAdaptar from the String Array
-        dataAdapter = new MyCustomAdapter(this,
-                R.layout.contact_listview, saveList);
-        listView = (ListView) findViewById(R.id.mylist);
-        // Assign adapter to ListView
-        listView.setAdapter(dataAdapter);
-
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                Contacts contacts = (Contacts) parent.getItemAtPosition(position);
-//                Toast.makeText(getApplicationContext(),
-//                        "Clicked on Row: " + contacts.getName(),
-//                        Toast.LENGTH_LONG).show();
-            }
-        });
+        if (name.contains("안태현")) {
+            personImage = resizeImage("taehyun", 320, 320);
+            personFace.setImageBitmap(getCircleBitmap(personImage));
+            personName.setText("안태현");
+            clickable[index] = true;
+            return true;
+        } else if (name.contains("성민경")) {
+            personImage = resizeImage("minkyung", 320, 320);
+            personFace.setImageBitmap(getCircleBitmap(personImage));
+            personName.setText("성민경");
+            clickable[index] = true;
+            return true;
+        } else if (name.contains("윤명식")) {
+            personImage = resizeImage("myungsik", 320, 320);
+            personFace.setImageBitmap(getCircleBitmap(personImage));
+            personName.setText("윤명식");
+            clickable[index] = true;
+            return true;
+        } else
+            return false;
     }
 
-    private class MyCustomAdapter extends ArrayAdapter<Contacts> {
+    public void matchIndex(int index) {
 
-        private ArrayList<Contacts> saveList;
-
-        public MyCustomAdapter(Context context, int textViewResourceId,
-                               ArrayList<Contacts> saveList) {
-            super(context, textViewResourceId, saveList);
-            this.saveList = new ArrayList<Contacts>();
-            this.saveList.addAll(saveList);
+        if (index == 0) {
+            personFace = (ImageView) findViewById(R.id.person_image1);
+            personName = (TextView) findViewById(R.id.person_nametxt1);
+        } else if (index == 1) {
+            personFace = (ImageView) findViewById(R.id.person_image2);
+            personName = (TextView) findViewById(R.id.person_nametxt2);
+        } else if (index == 2) {
+            personFace = (ImageView) findViewById(R.id.person_image3);
+            personName = (TextView) findViewById(R.id.person_nametxt3);
         }
+    }
 
-        private class ViewHolder {
-            TextView name;
-            TextView phoneNumber;
-            CheckBox checkBox;
-        }
+    public void imageSetting() {
 
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        int i;
 
-            ViewHolder holder = null;
-            Log.v("ConvertView", String.valueOf(position));
-            if (convertView == null) {
-                LayoutInflater vi = (LayoutInflater) getSystemService(
-                        Context.LAYOUT_INFLATER_SERVICE);
-                convertView = vi.inflate(R.layout.contact_listview, null);
-                holder = new ViewHolder();
-                holder.name = (TextView) convertView.findViewById(R.id.name);
-                holder.phoneNumber = (TextView) convertView.findViewById(R.id.phonenumber);
-                holder.checkBox = (CheckBox) convertView.findViewById(R.id.checkBox);
-                convertView.setTag(holder);
-                holder.checkBox.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        CheckBox checkBox;
-                        Contacts contacts;
-                        if (!unChecked) {
-                            checkBox = (CheckBox) recentView;
-                            contacts = (Contacts) checkBox.getTag();
-                            checkBox.toggle();
-                            contacts.setisChecked(false);
-                        }
-                        checkBox = (CheckBox) v;
-                        contacts = (Contacts) checkBox.getTag();
-//                        Toast.makeText(getApplicationContext(),
-//                                "Clicked on Checkbox: " + checkBox.getText() +
-//                                        " is " + checkBox.isChecked(),
-//                                Toast.LENGTH_LONG).show();
-                        contacts.setisChecked(checkBox.isChecked());
-                        recentView = v;
-                        unChecked = false;
-                    }
-                });
-
-            } else {
-                holder = (ViewHolder) convertView.getTag();
+        for (i = 0; i < saveList.size(); i++) {
+            matchIndex(i);
+            if (!checkMyTeam(saveList.get(i).getName(), i)) {
+                personImage = resizeImage("default_person_image", 220, 220);
+                personFace.setImageBitmap(personImage);
+                personName.setText(saveList.get(i).getName());
+                clickable[i] = true;
             }
+        }
+        for (int j = i; j < 3; j++) {
+            matchIndex(j);
+            personImage = resizeImage("none_select", 220, 220);
+            //personImage = BitmapFactory.decodeResource(getResources(), R.drawable.none_select);
+            personFace.setImageBitmap(personImage);
+            personName.setText("-");
+            clickable[j] = false;
+            if (j == 0) {
+                imageLayout1.setBackgroundResource(R.drawable.circle_black_style);
+            } else if (j == 1) {
+                imageLayout2.setBackgroundResource(R.drawable.circle_black_style);
+            } else if (j == 2) {
+                imageLayout3.setBackgroundResource(R.drawable.circle_black_style);
+            }
+        }
+    }
 
-            Contacts contacts = saveList.get(position);
-            holder.name.setText(contacts.getName());
-            holder.phoneNumber.setText(contacts.getPhoneNum());
-            holder.checkBox.setChecked(contacts.getisChecked());
-            holder.checkBox.setTag(contacts);
-            return convertView;
+    public Bitmap resizeImage(String iconName, int width, int height) {
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(iconName, "drawable", getPackageName()));
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
+        return resizedBitmap;
+    }
+
+    private Bitmap getCircleBitmap(Bitmap bitmap) {
+        final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(output);
+
+        final int color = Color.RED;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        final RectF rectF = new RectF(rect);
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        canvas.drawOval(rectF, paint);
+
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        bitmap.recycle();
+
+        return output;
+    }
+
+
+    private void imageButtonClick() {
+
+        if (clickable[0]) {
+            imageLayout1.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    image = (ImageView) findViewById(R.id.check_image1);
+                    switch (motionEvent.getAction()) {
+                        case MotionEvent.ACTION_DOWN: {
+                            pushLayout2.setVisibility(View.INVISIBLE);
+                            pushLayout3.setVisibility(View.INVISIBLE);
+                            pushLayout1.setBackgroundResource(R.drawable.circle_push_style);
+                            pushLayout1.setVisibility(View.VISIBLE);
+                            image.setImageResource(0);
+                            break;
+                        }
+                        case MotionEvent.ACTION_MOVE: {
+                            break;
+                        }
+                        case MotionEvent.ACTION_OUTSIDE: {
+                            pushLayout1.setVisibility(View.INVISIBLE);
+                            break;
+                        }
+                        case MotionEvent.ACTION_CANCEL: {
+                            pushLayout1.setVisibility(View.INVISIBLE);
+                            break;
+                        }
+                        case MotionEvent.ACTION_UP: {
+                            pushedIndex = 0;
+                            pushLayout1.setBackgroundResource(R.drawable.check_style);
+                            pushLayout1.setVisibility(View.VISIBLE);
+                            bitmapImage = BitmapFactory.decodeResource(getResources(), R.drawable.check_sign_icon_red);
+                            image.setImageBitmap(bitmapImage);
+                            break;
+                        }
+                    }
+                    return true;
+                }
+            });
+            pushLayout1.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    switch (motionEvent.getAction()) {
+                        case MotionEvent.ACTION_DOWN: {
+                            pushLayout1.setBackgroundResource(R.drawable.circle_push_style);
+                            break;
+                        }
+                        case MotionEvent.ACTION_OUTSIDE: {
+                            break;
+                        }
+                        case MotionEvent.ACTION_UP: {
+                            pushedIndex = 3;
+                            pushLayout1.setVisibility(View.INVISIBLE);
+                            break;
+                        }
+                    }
+                    return true;
+                }
+            });
+        }
+        if (clickable[1]) {
+            imageLayout2.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    image = (ImageView) findViewById(R.id.check_image2);
+                    switch (motionEvent.getAction()) {
+                        case MotionEvent.ACTION_DOWN: {
+                            pushLayout1.setVisibility(View.INVISIBLE);
+                            pushLayout3.setVisibility(View.INVISIBLE);
+                            pushLayout2.setBackgroundResource(R.drawable.circle_push_style);
+                            pushLayout2.setVisibility(View.VISIBLE);
+                            image.setImageResource(0);
+                            break;
+                        }
+                        case MotionEvent.ACTION_MOVE: {
+                            break;
+                        }
+                        case MotionEvent.ACTION_OUTSIDE: {
+                            pushLayout2.setVisibility(View.INVISIBLE);
+                            break;
+                        }
+                        case MotionEvent.ACTION_CANCEL: {
+                            pushLayout2.setVisibility(View.INVISIBLE);
+                            break;
+                        }
+                        case MotionEvent.ACTION_UP: {
+                            pushedIndex = 1;
+                            pushLayout2.setBackgroundResource(R.drawable.check_style);
+                            pushLayout2.setVisibility(View.VISIBLE);
+                            bitmapImage = BitmapFactory.decodeResource(getResources(), R.drawable.check_sign_icon_red);
+                            image.setImageBitmap(bitmapImage);
+                            break;
+                        }
+                    }
+                    return true;
+                }
+            });
+            pushLayout2.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    switch (motionEvent.getAction()) {
+                        case MotionEvent.ACTION_DOWN: {
+                            pushLayout2.setBackgroundResource(R.drawable.circle_push_style);
+                            break;
+                        }
+                        case MotionEvent.ACTION_OUTSIDE: {
+                            break;
+                        }
+                        case MotionEvent.ACTION_UP: {
+                            pushedIndex = 3;
+                            pushLayout2.setVisibility(View.INVISIBLE);
+                            break;
+                        }
+                    }
+                    return true;
+                }
+            });
+        }
+        if (clickable[2]) {
+            imageLayout3.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    image = (ImageView) findViewById(R.id.check_image3);
+                    switch (motionEvent.getAction()) {
+                        case MotionEvent.ACTION_DOWN: {
+                            pushLayout1.setVisibility(View.INVISIBLE);
+                            pushLayout2.setVisibility(View.INVISIBLE);
+                            pushLayout3.setBackgroundResource(R.drawable.circle_push_style);
+                            pushLayout3.setVisibility(View.VISIBLE);
+                            image.setImageResource(0);
+                            break;
+                        }
+                        case MotionEvent.ACTION_MOVE: {
+                            break;
+                        }
+                        case MotionEvent.ACTION_OUTSIDE: {
+                            pushLayout3.setVisibility(View.INVISIBLE);
+                            break;
+                        }
+                        case MotionEvent.ACTION_CANCEL: {
+                            pushLayout3.setVisibility(View.INVISIBLE);
+                            break;
+                        }
+                        case MotionEvent.ACTION_UP: {
+                            pushedIndex = 2;
+                            pushLayout3.setBackgroundResource(R.drawable.check_style);
+                            pushLayout3.setVisibility(View.VISIBLE);
+                            bitmapImage = BitmapFactory.decodeResource(getResources(), R.drawable.check_sign_icon_red);
+                            image.setImageBitmap(bitmapImage);
+                            break;
+                        }
+                    }
+                    return true;
+                }
+            });
+            pushLayout3.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    switch (motionEvent.getAction()) {
+                        case MotionEvent.ACTION_DOWN: {
+                            pushLayout3.setBackgroundResource(R.drawable.circle_push_style);
+                            break;
+                        }
+                        case MotionEvent.ACTION_OUTSIDE: {
+                            break;
+                        }
+                        case MotionEvent.ACTION_UP: {
+                            pushedIndex = 3;
+                            pushLayout3.setVisibility(View.INVISIBLE);
+                            break;
+                        }
+                    }
+                    return true;
+                }
+            });
+        }
+    }
+
+    private void delete(int index) {
+
+        matchIndex(index);
+        personImage = resizeImage("none_select", 220, 220);
+        personFace.setImageBitmap(personImage);
+        personName.setText("-");
+        clickable[index] = false;
+        if (index == 0) {
+            pushLayout1.setVisibility(View.INVISIBLE);
+            imageLayout1.setOnTouchListener(null);
+            imageLayout1.setBackgroundResource(R.drawable.circle_black_style);
+        } else if (index == 1) {
+            pushLayout2.setVisibility(View.INVISIBLE);
+            imageLayout2.setOnTouchListener(null);
+            imageLayout2.setBackgroundResource(R.drawable.circle_black_style);
+        } else if (index == 2) {
+            pushLayout3.setVisibility(View.INVISIBLE);
+            imageLayout3.setOnTouchListener(null);
+            imageLayout3.setBackgroundResource(R.drawable.circle_black_style);
         }
     }
 
     private void checkButtonClick() {
 
         Button add = (Button) findViewById(R.id.btn_add);
-        Button delete = (Button) findViewById(R.id.btn_delete);
+        final Button delete = (Button) findViewById(R.id.btn_delete);
 
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(unChecked) {
+                if (pushedIndex == 3) {
                     Toast.makeText(getApplicationContext(),
                             "삭제할 전화번호를 선택하여 주세요.", Toast.LENGTH_LONG).show();
-                }
-                else {
-                    count = 0;
-                    saveList = dataAdapter.saveList;
-                    for (int i = 0; i < saveList.size(); i++) {
-                        Contacts contacts = saveList.get(i);
-                        if (contacts.getisChecked()) {
-                            dataAdapter.remove(contacts);
-                            saveList.remove(i);
-                            count++;
-                        }
-                    }
-                    dataAdapter.notifyDataSetChanged();
+                } else {
 
+                    delete(pushedIndex);
+                    saveList.remove(pushedIndex);
                     pref.removeAllPreferences("name");
                     pref.removeAllPreferences("phoneNum");
                     for (int i = 0; i < saveList.size(); i++) {
                         pref.putValue(Integer.toString(i), saveList.get(i).getName(), "name");
                         pref.putValue(Integer.toString(i), saveList.get(i).getPhoneNum(), "phoneNum");
                     }
-                    unChecked = true;
                 }
 
             }
@@ -236,8 +464,6 @@ public class UserFavoriteContacts extends ActionBarActivity {
             this.isChecked = isChecked;
         }
     }
-
-
 
 
     @Override

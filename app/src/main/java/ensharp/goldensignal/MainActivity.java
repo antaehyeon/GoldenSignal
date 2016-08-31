@@ -10,8 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.location.Location;
@@ -19,7 +17,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -41,8 +38,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 public class MainActivity extends ActionBarActivity implements LocationListener, GpsStatus.Listener {
@@ -104,10 +99,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         start = (Button) findViewById(R.id.start);
         //start.setVisibility(View.INVISIBLE); --> 이거 다시 주석해제
         reset = (Button) findViewById(R.id.reset);
-        reset.setVisibility(View.INVISIBLE);
+        //reset.setVisibility(View.INVISIBLE);
         drivingLayout = (RelativeLayout) findViewById(R.id.driving);
         drivingLayout.setVisibility(View.INVISIBLE);
-        reset.setVisibility(View.VISIBLE);
+        //reset.setVisibility(View.VISIBLE);
         Speed_Multiplier = 3.6;
         Distance_Long = " Km";
         Distance_Short = " m";
@@ -125,41 +120,41 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         statusLayout = (RelativeLayout) findViewById(R.id.status_layout);
         //statusLayout.setVisibility(View.VISIBLE);
         drivingLayout.setVisibility(View.INVISIBLE);
-        time.setText("00:00:00");
-        time.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-            boolean isPair = true;
-
-            @Override
-            public void onChronometerTick(Chronometer chrono) {
-                long time;
-                if (data.isRunning()) {
-                    time = SystemClock.elapsedRealtime() - chrono.getBase();
-                    data.setTime(time);
-                } else {
-                    time = data.getTime();
-                }
-
-                int h = (int) (time / 3600000);
-                int m = (int) (time - h * 3600000) / 60000;
-                int s = (int) (time - h * 3600000 - m * 60000) / 1000;
-                String hh = h < 10 ? "0" + h : h + "";
-                String mm = m < 10 ? "0" + m : m + "";
-                String ss = s < 10 ? "0" + s : s + "";
-                chrono.setText(hh + ":" + mm + ":" + ss);
-
-                if (data.isRunning()) {
-                    chrono.setText(hh + ":" + mm + ":" + ss);
-                } else {
-                    if (isPair) {
-                        isPair = false;
-                        chrono.setText(hh + ":" + mm + ":" + ss);
-                    } else {
-                        isPair = true;
-                        chrono.setText("");
-                    }
-                }
-            }
-        });
+//        time.setText("00:00:00");
+//        time.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+//            boolean isPair = true;
+//
+//            @Override
+//            public void onChronometerTick(Chronometer chrono) {
+//                long time;
+//                if (data.isRunning()) {
+//                    time = SystemClock.elapsedRealtime() - chrono.getBase();
+//                    data.setTime(time);
+//                } else {
+//                    time = data.getTime();
+//                }
+//
+//                int h = (int) (time / 3600000);
+//                int m = (int) (time - h * 3600000) / 60000;
+//                int s = (int) (time - h * 3600000 - m * 60000) / 1000;
+//                String hh = h < 10 ? "0" + h : h + "";
+//                String mm = m < 10 ? "0" + m : m + "";
+//                String ss = s < 10 ? "0" + s : s + "";
+//                chrono.setText(hh + ":" + mm + ":" + ss);
+//
+//                if (data.isRunning()) {
+//                    chrono.setText(hh + ":" + mm + ":" + ss);
+//                } else {
+//                    if (isPair) {
+//                        isPair = false;
+//                        chrono.setText(hh + ":" + mm + ":" + ss);
+//                    } else {
+//                        isPair = true;
+//                        chrono.setText("");
+//                    }
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -193,18 +188,23 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
     public void onStartClick(View v) {
         if (!data.isRunning()) {
-            if (_bluetooth.isEnabled()) {
-                bluetoothPair();
-                start.setText("일시 정지");
-                data.setRunning(true);
-                time.setBase(SystemClock.elapsedRealtime() - data.getTime());
-                time.start();
-                data.setFirstTime(true);
-                startService(new Intent(getBaseContext(), GpsServices.class));
-                reset.setVisibility(View.INVISIBLE);
+            if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                Toast.makeText(this, "단말기 설정에서 '위치 서비스'사용을 허용해주세요", Toast.LENGTH_SHORT).show();
             }
             else {
-                Toast.makeText(this, "블루투스 연결이 불가합니다.", Toast.LENGTH_SHORT).show();
+                if (_bluetooth.isEnabled()) {
+                    bluetoothPair();
+                    start.setText("주행 종료");
+                    data.setRunning(true);
+//                time.setBase(SystemClock.elapsedRealtime() - data.getTime());
+//                time.start();
+                    data.setFirstTime(true);
+                    startService(new Intent(getBaseContext(), GpsServices.class));
+                    Toast.makeText(this, "주행을 시작합니다", Toast.LENGTH_SHORT).show();
+                    //reset.setVisibility(View.INVISIBLE);
+                } else {
+                    Toast.makeText(this, "블루투스 연결이 불가합니다", Toast.LENGTH_SHORT).show();
+                }
             }
         } else {
             //start.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_play));
@@ -212,9 +212,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             start.setText("주행 시작");
             data.setRunning(false);
             //status.setText("");
-            statusLayout.setVisibility(View.GONE);
+//            statusLayout.setVisibility(View.GONE);
+            Toast.makeText(this, "서비스를 종료합니다", Toast.LENGTH_SHORT).show();
             stopService(new Intent(getBaseContext(), GpsServices.class));
-            reset.setVisibility(View.VISIBLE);
+//            reset.setVisibility(View.VISIBLE);
         }
     }
 
@@ -379,10 +380,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
 
 
-    public void onResetClick(View v) {
-        resetData();
-        stopService(new Intent(getBaseContext(), GpsServices.class));
-    }
+//    public void onResetClick(View v) {
+//        resetData();
+//        stopService(new Intent(getBaseContext(), GpsServices.class));
+//    }
 
     @Override
     protected void onResume() {
@@ -427,39 +428,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
     }
 
-    public String getAddress(double lat, double lng) {
-        String address = null;
-
-
-        //위치정보를 활용하기 위한 구글 API 객체
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-
-        //주소 목록을 담기 위한 HashMap
-        List<Address> list = null;
-
-        try {
-            list = geocoder.getFromLocation(lat, lng, 1);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (list == null) {
-            Log.e("getAddress", "주소 데이터 얻기 실패");
-            return null;
-        }
-
-        if (list.size() > 0) {
-
-            Address addr = list.get(0);
-            address = addr.getCountryName() + " "
-                    + addr.getLocality() + " "
-                    + addr.getThoroughfare() + " "
-                    + addr.getFeatureName();
-        }
-        return address;
-    }
-
-
     @Override
     public void onLocationChanged(Location location) {
         //Toast.makeText(this, "onLocationChanged 실행", Toast.LENGTH_SHORT).show();
@@ -467,11 +435,11 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             if (firstfix) {
                 drivingLayout.setVisibility(View.VISIBLE);
                 //status.setText("");
-                statusLayout.setVisibility(View.GONE);
-                start.setVisibility(View.VISIBLE);
-                if (!data.isRunning()) {
-                    reset.setVisibility(View.VISIBLE);
-                }
+                //statusLayout.setVisibility(View.GONE);
+                //start.setVisibility(View.VISIBLE);
+//                if (!data.isRunning()) {
+//                    reset.setVisibility(View.VISIBLE);
+//                }
                 firstfix = false;
             }
         } else {
@@ -522,12 +490,13 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                     drivingLayout.setVisibility(View.INVISIBLE);
                     data.setRunning(true);
                     //status.setText("");
-                    statusLayout.setVisibility(View.GONE);
+                    //statusLayout.setVisibility(View.GONE);
                     stopService(new Intent(getBaseContext(), GpsServices.class));
                     //start.setVisibility(View.INVISIBLE);  --> 이거 다시 주석해제
-                    reset.setVisibility(View.INVISIBLE);
+                    //reset.setVisibility(View.INVISIBLE);
                     //status.setText(getResources().getString(R.string.waiting_for_fix));
                     //statusLayout.setVisibility(View.VISIBLE);
+                    Toast.makeText(this, "현재 GPS 확인이 불가합니다", Toast.LENGTH_SHORT).show();
                     drivingLayout.setVisibility(View.INVISIBLE);
                     data.setRunning(false);
                     firstfix = true;
@@ -544,14 +513,14 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         }
     }
 
-    public void resetData() {
-        //start.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_play));
-        start.setText("주행 시작");
-        reset.setVisibility(View.INVISIBLE);
-        time.stop();
-        time.setText("00:00:00");
-        data = new Data(onGpsServiceUpdate);
-    }
+//    public void resetData() {
+//        //start.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_play));
+//        start.setText("주행 시작");
+//        reset.setVisibility(View.INVISIBLE);
+//        time.stop();
+//        time.setText("00:00:00");
+//        data = new Data(onGpsServiceUpdate);
+//    }
 
     public static Data getData() {
         return data;

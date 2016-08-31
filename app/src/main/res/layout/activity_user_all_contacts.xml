@@ -3,30 +3,101 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/settingstoolbar"
         style="@style/ToolBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:background="?attr/colorPrimary"
         android:elevation="5dp"
-        android:minHeight="@dimen/abc_action_bar_default_height_material"
-        android:layout_alignParentTop="true">
+        android:minHeight="@dimen/abc_action_bar_default_height_material">
 
     </android.support.v7.widget.Toolbar>
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="450dp"
-        android:id="@+id/contactlistview"
-        android:layout_centerVertical="true"
-        android:layout_alignStart="@+id/settingstoolbar" />
 
-    <Button
+    <LinearLayout
+        android:id="@+id/contacts_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/settingstoolbar"
+        android:orientation="horizontal"
+        android:background="@drawable/layout_bottom_seperator"
+        android:weightSum="2">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:text="선택 가능인원"
+                android:textColor="@color/black"
+                android:textSize="19dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/limit_num"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:gravity="right"
+                android:textColor="@color/red_dark"
+                android:textSize="19dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="저장하기"
-        android:id="@+id/findSelected"
-        android:layout_below="@+id/contactlistview"
-        android:layout_centerHorizontal="true" />
+        android:orientation="vertical"
+        android:layout_below="@+id/contacts_info"
+        android:layout_alignParentBottom="true"
+        android:weightSum="10">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="8.5">
+
+            <ListView
+                android:id="@+id/contactlistview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:dividerHeight="0.5dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.5"
+            android:background="@drawable/layout_top_seperator">
+
+            <Button
+                android:id="@+id/findSelected"
+                android:layout_width="300dp"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/button_style"
+                android:text="저장하기"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
+    </LinearLayout>
 </RelativeLayout>

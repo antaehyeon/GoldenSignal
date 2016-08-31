@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="center"
-        android:layout_weight="65"
+        android:layout_weight="60"
         android:background="#FFFFFFFF"
         android:gravity="center">
 
@@ -44,6 +44,12 @@
                     android:text="Golden Signal"
                     android:textColor="@android:color/black"
                     android:textSize="30sp" />
+               <ImageView
+                   android:layout_width="100dp"
+                   android:layout_height="100dp"
+                   android:layout_centerHorizontal="true"
+                   android:layout_gravity="center"
+                   android:src="@drawable/autobicycle"/>
             </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/driving"
@@ -72,7 +78,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="15">
+        android:layout_weight="7"
+        android:background="@color/white">
 
         <Chronometer
             android:id="@+id/time"
@@ -80,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:gravity="center"
+            android:gravity="top"
             android:text=""
             android:textColor="@android:color/black"
             android:textSize="35sp" />
@@ -89,7 +96,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="20">
+        android:layout_weight="33">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -99,36 +106,43 @@
                 android:id="@+id/button_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="visible">
+                android:visibility="visible"
+                android:background="@color/white">
 
                 <Button
                     android:id="@+id/start"
-                    android:layout_width="80dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignStart="@+id/reset"
+                    android:layout_width="300dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="@color/blue"
+                    android:background="@drawable/button_style"
                     android:onClick="onStartClick"
-                    android:text="주행 시작" />
+                    android:text="주행 시작"
+                    android:textSize="18dp"
+                    android:layout_above="@+id/reset"
+                    android:layout_alignStart="@+id/reset"
+                    android:layout_marginBottom="18dp"
+                    android:layout_alignEnd="@+id/reset" />
 
                 <Button
                     android:id="@+id/reset"
-                    android:layout_width="80dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/start"
-                    android:layout_centerHorizontal="true"
+                    android:layout_width="300dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center_horizontal"
+                    android:background="@drawable/button_style"
                     android:onClick="onResetClick"
-                    android:text="초기화" />
+                    android:text="초기화"
+                    android:textSize="18dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="24dp" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/status_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:background="@color/white">
 
                 <TextView
                     android:id="@+id/status"
