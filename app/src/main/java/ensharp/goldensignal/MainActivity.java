@@ -80,7 +80,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     String myPhoneNumber;
     ensharp.goldensignal.SharedPreferences pref;
     boolean isBluetoothPairing;
-
+    boolean isSendMMS;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mContext = this;
@@ -122,41 +122,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         statusLayout = (RelativeLayout) findViewById(R.id.status_layout);
         //statusLayout.setVisibility(View.VISIBLE);
         drivingLayout.setVisibility(View.INVISIBLE);
-//        time.setText("00:00:00");
-//        time.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-//            boolean isPair = true;
-//
-//            @Override
-//            public void onChronometerTick(Chronometer chrono) {
-//                long time;
-//                if (data.isRunning()) {
-//                    time = SystemClock.elapsedRealtime() - chrono.getBase();
-//                    data.setTime(time);
-//                } else {
-//                    time = data.getTime();
-//                }
-//
-//                int h = (int) (time / 3600000);
-//                int m = (int) (time - h * 3600000) / 60000;
-//                int s = (int) (time - h * 3600000 - m * 60000) / 1000;
-//                String hh = h < 10 ? "0" + h : h + "";
-//                String mm = m < 10 ? "0" + m : m + "";
-//                String ss = s < 10 ? "0" + s : s + "";
-//                chrono.setText(hh + ":" + mm + ":" + ss);
-//
-//                if (data.isRunning()) {
-//                    chrono.setText(hh + ":" + mm + ":" + ss);
-//                } else {
-//                    if (isPair) {
-//                        isPair = false;
-//                        chrono.setText(hh + ":" + mm + ":" + ss);
-//                    } else {
-//                        isPair = true;
-//                        chrono.setText("");
-//                    }
-//                }
-//            }
-//        });
+
     }
 
     @Override
@@ -201,6 +167,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                     data.setFirstTime(true);
                     startService(new Intent(getBaseContext(), GpsServices.class));
                     Toast.makeText(this, "주행을 시작합니다", Toast.LENGTH_SHORT).show();
+
                     //reset.setVisibility(View.INVISIBLE);
                 } else {
                     Toast.makeText(this, "블루투스 연결이 불가합니다", Toast.LENGTH_SHORT).show();
@@ -214,6 +181,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             //status.setText("");
 //            statusLayout.setVisibility(View.GONE);
             Toast.makeText(this, "서비스를 종료합니다", Toast.LENGTH_SHORT).show();
+            isSendMMS = false;
             stopService(new Intent(getBaseContext(), GpsServices.class));
 //            reset.setVisibility(View.VISIBLE);
         }
@@ -285,10 +253,11 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
                         String total = "사고자 : " + strName + '\n' + "연락처 : " + myPhoneNumber + '\n' + "사고가 났습니다. 도와주세요." + '\n' + "위도 : " + myLocation.getLatitude() + '\n' + "경도 : " + myLocation.getAltitude();
 
-                        if (total.length()>0  && (0.01 <= mySpeed )&&(mySpeed <= 1.0)){ // 속도 범위 추가 (상황에 따라서 다시 바꿀 필요 있음
+                        if (!isSendMMS  && (0.01 <= mySpeed )&&(mySpeed <= 1.0)){ // 속도 범위 추가 (상황에 따라서 다시 바꿀 필요 있음
                             sendSMS("01048862255", total);
+                            isSendMMS = true;
                         } else {
-                            Toast.makeText(MainActivity.this, "모두 입력해 주세요", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "자동신고 문자가 발송되지 않았습니다.", Toast.LENGTH_SHORT).show();
                         }
 
                     }
