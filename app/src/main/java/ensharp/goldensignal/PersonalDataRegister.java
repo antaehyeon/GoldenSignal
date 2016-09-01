@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ public class PersonalDataRegister  extends ActionBarActivity implements  Adapter
 
     RadioGroup radioGroup, radioGroup1;
     RadioButton men, women, rh_plus, rh_minus, btn_A, btn_B, btn_AB, btn_O;
-    Spinner spinner;
 
     //SharedPreferences setting;
     //SharedPreferences.Editor editor;
@@ -86,8 +84,27 @@ public class PersonalDataRegister  extends ActionBarActivity implements  Adapter
         String ID = input_ID.getText().toString();
         String Age = input_Age.getText().toString();
 
-        pref.putValue("이름", ID, "user_info");
-        pref.putValue("나이", Age, "user_info");
+        if(ID == null )
+        {
+            Toast.makeText(PersonalDataRegister.this, "이름을 입력하십시오.", Toast.LENGTH_SHORT).show();
+            input_ID.requestFocus();
+        }
+        else if(Age == null)
+        {
+            Toast.makeText(PersonalDataRegister.this, "나이를 입력하십시오.", Toast.LENGTH_SHORT).show();
+            input_Age.requestFocus();
+        }
+        else if(ID==null && Age == null)
+        {
+            Toast.makeText(PersonalDataRegister.this, "이름과 나이를 입력하십시오.", Toast.LENGTH_SHORT).show();
+            input_ID.requestFocus();
+        }
+        else
+        {
+            pref.putValue("이름", ID, "user_info");
+            pref.putValue("나이", Age, "user_info");
+        }
+
         pref.putValue("남", men.isChecked(),"user_info");
         pref.putValue("여", women.isChecked(), "user_info");
         pref.putValue("RH+", rh_plus.isChecked(),"user_info");
