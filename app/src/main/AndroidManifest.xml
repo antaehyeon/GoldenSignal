@@ -27,7 +27,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SplashActvity" />
+        <activity android:name=".SplashActivity"
+                  android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity android:name=".PersonalDataRegister" />
 
         <activity android:name=".UserAllContacts"/>

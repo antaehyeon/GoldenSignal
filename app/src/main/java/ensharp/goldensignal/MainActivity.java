@@ -76,6 +76,11 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         mContext = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /* HYEON
+            Splash Activity ADD */
+        startActivity(new Intent(this, SplashActivity.class));
+
         pref = new ensharp.goldensignal.SharedPreferences(this);
         if (!pref.getValue("Auto_Login_enabled", false, "user_info")) {
             Intent intent = new Intent(this, PersonalDataRegister.class);
