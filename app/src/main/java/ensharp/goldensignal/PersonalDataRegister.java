@@ -6,7 +6,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -21,7 +20,7 @@ public class PersonalDataRegister  extends ActionBarActivity implements  Adapter
     Button btn_send;
 
     RadioGroup radioGroup, radioGroup1;
-    RadioButton men, women, rh_plus, rh_minus;
+    RadioButton men, women, rh_plus, rh_minus, btn_A, btn_B, btn_AB, btn_O;
     Spinner spinner;
 
     //SharedPreferences setting;
@@ -39,7 +38,6 @@ public class PersonalDataRegister  extends ActionBarActivity implements  Adapter
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        using_spinner();
         pref = new ensharp.goldensignal.SharedPreferences(this);
         //layout 사용할 변수 선언
         input_ID = (EditText) findViewById(R.id.input_ID);
@@ -50,7 +48,11 @@ public class PersonalDataRegister  extends ActionBarActivity implements  Adapter
         women = (RadioButton)findViewById(R.id.Women);
         rh_plus = (RadioButton)findViewById(R.id.rh_plus);
         rh_minus = (RadioButton)findViewById(R.id.rh_minus);
-        spinner = (Spinner)findViewById(R.id.spinner);
+        btn_A = (RadioButton)findViewById(R.id.btn_a);
+        btn_B = (RadioButton)findViewById(R.id.btn_b);
+        btn_AB = (RadioButton)findViewById(R.id.btn_ab);
+        btn_O = (RadioButton)findViewById(R.id.btn_o);
+        //spinner = (Spinner)findViewById(R.id.spinner);
         btn_send = (Button) findViewById(R.id.btn_send);
 
         //setting = getSharedPreferences("user_info", MODE_PRIVATE);
@@ -61,7 +63,6 @@ public class PersonalDataRegister  extends ActionBarActivity implements  Adapter
 
         btn_send.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-
                 save_userInfo();
             }
         }) ;
@@ -91,18 +92,13 @@ public class PersonalDataRegister  extends ActionBarActivity implements  Adapter
         pref.putValue("여", women.isChecked(), "user_info");
         pref.putValue("RH+", rh_plus.isChecked(),"user_info");
         pref.putValue("RH-", rh_minus.isChecked(), "user_info");
-        pref.putValue("RH-", spinner.getSelectedItem().toString(), "user_info");
+        pref.putValue("A", btn_A.isChecked(), "user_info");
+        pref.putValue("B", btn_B.isChecked(), "user_info");
+        pref.putValue("AB", btn_AB.isChecked(), "user_info");
+        pref.putValue("O", btn_O.isChecked(), "user_info");
         pref.putValue("Auto_Login_enabled", true, "user_info");
-       // editor.putBoolean("Auto_Login_enabled", true);
-//        editor.putString("이름", ID);
-//        editor.putString("나이", Age);
-      //  editor.putBoolean("남",men.isChecked());
-       // editor.putBoolean("여",women.isChecked());
-       // editor.putBoolean("RH+",rh_plus.isChecked());
-       // editor.putBoolean("RH-",rh_minus.isChecked());
-        //editor.putString("혈액형", spinner.getSelectedItem().toString());
 
-       // editor.putBoolean("Auto_Login_enabled", true);
+
         Intent intent = new Intent(this, MainActivity.class);
         Toast.makeText(PersonalDataRegister.this, "정보가 저장되었습니다!", Toast.LENGTH_SHORT).show();
         finish();
@@ -121,32 +117,11 @@ public class PersonalDataRegister  extends ActionBarActivity implements  Adapter
         rh_plus.setChecked(pref.getValue("RH+", true, "user_info"));
         rh_minus.setChecked(pref.getValue("RH-", false, "user_info"));
 
-//        input_ID.setText(setting.getString("이름", ""));
-//        input_Age.setText(setting.getString("나이", ""));
-//
-//        men.setChecked(setting.getBoolean("남", true));
-//        women.setChecked(setting.getBoolean("여", false));
-//
-//        rh_plus.setChecked(setting.getBoolean("RH+", true));
-//        rh_minus.setChecked(setting.getBoolean("RH-", false));
-    }
+        btn_A.setChecked(pref.getValue("A", true, "user_info"));
+        btn_B.setChecked(pref.getValue("B", false, "user_info"));
+        btn_AB.setChecked(pref.getValue("AB", false, "user_info"));
+        btn_O.setChecked(pref.getValue("O", false, "user_info"));
 
-    // 스피너 (혈액형 정보) 정보 등록& 선언
-    public void using_spinner()
-    {
-        //스피너에 사용될 아이템 정보
-        arraylist = new ArrayList<String>();
-        arraylist.add("A");
-        arraylist.add("B");
-        arraylist.add("AB");
-        arraylist.add("O");
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, arraylist);
-        //스피너 속성
-        Spinner sp = (Spinner) this.findViewById(R.id.spinner);
-        sp.setPrompt("선택해주세요"); // 스피너 제목
-        sp.setAdapter(adapter);
-        sp.setOnItemSelectedListener(this);
     }
 
     @Override
