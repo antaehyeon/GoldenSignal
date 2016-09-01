@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class PersonalDataRegister  extends ActionBarActivity implements  AdapterView.OnItemSelectedListener {
+public class PersonalDataRegister extends ActionBarActivity implements AdapterView.OnItemSelectedListener {
     EditText input_ID, input_Age;
     Button btn_send;
 
@@ -40,16 +40,16 @@ public class PersonalDataRegister  extends ActionBarActivity implements  Adapter
         //layout 사용할 변수 선언
         input_ID = (EditText) findViewById(R.id.input_ID);
         input_Age = (EditText) findViewById(R.id.input_Age);
-        radioGroup = (RadioGroup)findViewById(R.id.radioGroup);
-        radioGroup1 = (RadioGroup)findViewById(R.id.radioGroup1);
-        men = (RadioButton)findViewById(R.id.Men);
-        women = (RadioButton)findViewById(R.id.Women);
-        rh_plus = (RadioButton)findViewById(R.id.rh_plus);
-        rh_minus = (RadioButton)findViewById(R.id.rh_minus);
-        btn_A = (RadioButton)findViewById(R.id.btn_a);
-        btn_B = (RadioButton)findViewById(R.id.btn_b);
-        btn_AB = (RadioButton)findViewById(R.id.btn_ab);
-        btn_O = (RadioButton)findViewById(R.id.btn_o);
+        radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+        radioGroup1 = (RadioGroup) findViewById(R.id.radioGroup1);
+        men = (RadioButton) findViewById(R.id.Men);
+        women = (RadioButton) findViewById(R.id.Women);
+        rh_plus = (RadioButton) findViewById(R.id.rh_plus);
+        rh_minus = (RadioButton) findViewById(R.id.rh_minus);
+        btn_A = (RadioButton) findViewById(R.id.btn_a);
+        btn_B = (RadioButton) findViewById(R.id.btn_b);
+        btn_AB = (RadioButton) findViewById(R.id.btn_ab);
+        btn_O = (RadioButton) findViewById(R.id.btn_o);
         //spinner = (Spinner)findViewById(R.id.spinner);
         btn_send = (Button) findViewById(R.id.btn_send);
 
@@ -63,7 +63,7 @@ public class PersonalDataRegister  extends ActionBarActivity implements  Adapter
             public void onClick(View v) {
                 save_userInfo();
             }
-        }) ;
+        });
     }
 
     //혈액형을 눌렀을때 토스트창을 띄우기 위해
@@ -79,34 +79,25 @@ public class PersonalDataRegister  extends ActionBarActivity implements  Adapter
     }
 
     // 입력한 값들을 저장하는 부분
-    public  void save_userInfo()
-    {
+    public void save_userInfo() {
         String ID = input_ID.getText().toString();
         String Age = input_Age.getText().toString();
 
-        if(ID == null )
-        {
-            Toast.makeText(PersonalDataRegister.this, "이름을 입력하십시오.", Toast.LENGTH_SHORT).show();
-            input_ID.requestFocus();
-
-        }
-        else if(Age == null)
-        {
-            Toast.makeText(PersonalDataRegister.this, "나이를 입력하십시오.", Toast.LENGTH_SHORT).show();
-            input_Age.requestFocus();
-        }
-        else if(ID==null && Age == null)
-        {
+        if (ID.equals("") && Age.equals("")) {
             Toast.makeText(PersonalDataRegister.this, "이름과 나이를 입력하십시오.", Toast.LENGTH_SHORT).show();
             input_ID.requestFocus();
-        }
-        else
-        {
+        } else if (ID.equals("")) {
+            Toast.makeText(PersonalDataRegister.this, "이름을 입력하십시오.", Toast.LENGTH_SHORT).show();
+            input_ID.requestFocus();
+        } else if (Age.equals("")) {
+            Toast.makeText(PersonalDataRegister.this, "나이를 입력하십시오.", Toast.LENGTH_SHORT).show();
+            input_Age.requestFocus();
+        } else {
             pref.putValue("이름", ID, "user_info");
             pref.putValue("나이", Age, "user_info");
-            pref.putValue("남", men.isChecked(),"user_info");
+            pref.putValue("남", men.isChecked(), "user_info");
             pref.putValue("여", women.isChecked(), "user_info");
-            pref.putValue("RH+", rh_plus.isChecked(),"user_info");
+            pref.putValue("RH+", rh_plus.isChecked(), "user_info");
             pref.putValue("RH-", rh_minus.isChecked(), "user_info");
             pref.putValue("A", btn_A.isChecked(), "user_info");
             pref.putValue("B", btn_B.isChecked(), "user_info");
@@ -115,17 +106,16 @@ public class PersonalDataRegister  extends ActionBarActivity implements  Adapter
             pref.putValue("Auto_Login_enabled", true, "user_info");
 
             Intent intent = new Intent(this, MainActivity.class);
-            Toast.makeText(PersonalDataRegister.this, "정보가 저장되었습니다!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(PersonalDataRegister.this, "정보가 저장되었습니다", Toast.LENGTH_SHORT).show();
             finish();
             startActivity(intent);
         }
     }
 
     //만약 저장된 정보가 아무것도 없을 경우, 임의의 값들로 설정해서 보여줌
-    public  void get_userInfo()
-    {
-        input_ID.setText(pref.getValue("이름","","user_info"));
-        input_Age.setText(pref.getValue("나이", "","user_info"));
+    public void get_userInfo() {
+        input_ID.setText(pref.getValue("이름", "", "user_info"));
+        input_Age.setText(pref.getValue("나이", "", "user_info"));
 
         men.setChecked(pref.getValue("남", true, "user_info"));
         women.setChecked(pref.getValue("여", false, "user_info"));
