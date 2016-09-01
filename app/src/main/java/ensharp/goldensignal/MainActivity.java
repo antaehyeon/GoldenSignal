@@ -87,13 +87,12 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         pref = new ensharp.goldensignal.SharedPreferences(this);
-
+        bluetoothPair();
         if (!pref.getValue("Auto_Login_enabled", false, "user_info")) {
             Intent intent = new Intent(this, PersonalDataRegister.class);
             finish();
             startActivity(intent);
         }
-
         data = new Data(onGpsServiceUpdate);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -159,7 +158,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 Toast.makeText(this, "단말기 설정에서 '위치 서비스'사용을 허용해주세요", Toast.LENGTH_SHORT).show();
             } else {
                 if (_bluetooth.isEnabled()) {
-                    bluetoothPair();
+                   // bluetoothPair();
                     start.setText("주행 종료");
 
 //                time.setBase(SystemClock.elapsedRealtime() - data.getTime());
@@ -168,6 +167,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                     startService(new Intent(getBaseContext(), GpsServices.class));
                     Toast.makeText(this, "주행을 시작합니다", Toast.LENGTH_SHORT).show();
                     data.setRunning(true);
+                    drivingLayout.setVisibility(View.VISIBLE);
+                    SpannableString s = new SpannableString(String.format("%.1f", mySpeed * Speed_Multiplier) + Speed_Units);
+                    s.setSpan(new RelativeSizeSpan(0.25f), s.length() - 3, s.length(), 0);
+                    currentSpeed.setText(s);
                     //reset.setVisibility(View.INVISIBLE);
                 } else {
                     Toast.makeText(this, "블루투스 연결이 불가합니다", Toast.LENGTH_SHORT).show();
@@ -175,11 +178,11 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             }
         } else {
             //start.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_play));
-            drivingLayout.setVisibility(View.VISIBLE);
             start.setText("주행 시작");
             data.setRunning(false);
             //status.setText("");
 //            statusLayout.setVisibility(View.GONE);
+            drivingLayout.setVisibility(View.INVISIBLE);
             Toast.makeText(this, "서비스를 종료합니다", Toast.LENGTH_SHORT).show();
             isSendMMS = false;
             stopService(new Intent(getBaseContext(), GpsServices.class));
@@ -212,8 +215,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             public void run() {
                 connect(device);
             }
-
-            ;
         }.start();
     }
 
@@ -311,7 +312,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
         total = "오토바이 사고발생" + '\n' +
                 "위도 : " + myLocation.getLatitude() + '\n' +
-                "경도 : " + myLocation.getAltitude() + '\n' +
+                "경도 : " + myLocation.getLongitude() + '\n' +
                 "사고자 : " + name + '\n' +
                 "연락처 : " + myPhoneNumber + '\n' +
                 sex + ", " + age + ", " + rhType + ", " + bloodType;
@@ -478,7 +479,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 if (satsUsed == 0) {
                     //start.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_play));
                     //start.setText("주행 시작"); --> 이거 해제해야함
-                    drivingLayout.setVisibility(View.INVISIBLE);
+                    //drivingLayout.setVisibility(View.INVISIBLE); --> 이거 다시 주석해제
                     //data.setRunning(true);
                     //status.setText("");
                     //statusLayout.setVisibility(View.GONE);
@@ -490,7 +491,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                     if (data.isRunning()) {
                         Toast.makeText(this, "현재 GPS 확인이 불가합니다", Toast.LENGTH_SHORT).show();
                     }
-                    drivingLayout.setVisibility(View.INVISIBLE);
+                    //drivingLayout.setVisibility(View.INVISIBLE); --> 이거 다시 주석해제
                     //data.setRunning(false); --> 이거 해제해야함
                     firstfix = true;
                 }

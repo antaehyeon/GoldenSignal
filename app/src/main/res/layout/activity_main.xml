@@ -60,7 +60,7 @@
                 android:layout_width="280dp"
                 android:layout_height="280dp"
                 android:layout_gravity="center"
-                android:background="@drawable/circle_style"
+                android:background="@drawable/circle_driving_style"
                 android:gravity="center"
                 android:visibility="invisible">
 
