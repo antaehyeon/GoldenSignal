@@ -88,6 +88,7 @@ public class PersonalDataRegister  extends ActionBarActivity implements  Adapter
         {
             Toast.makeText(PersonalDataRegister.this, "이름을 입력하십시오.", Toast.LENGTH_SHORT).show();
             input_ID.requestFocus();
+
         }
         else if(Age == null)
         {
@@ -103,23 +104,21 @@ public class PersonalDataRegister  extends ActionBarActivity implements  Adapter
         {
             pref.putValue("이름", ID, "user_info");
             pref.putValue("나이", Age, "user_info");
+            pref.putValue("남", men.isChecked(),"user_info");
+            pref.putValue("여", women.isChecked(), "user_info");
+            pref.putValue("RH+", rh_plus.isChecked(),"user_info");
+            pref.putValue("RH-", rh_minus.isChecked(), "user_info");
+            pref.putValue("A", btn_A.isChecked(), "user_info");
+            pref.putValue("B", btn_B.isChecked(), "user_info");
+            pref.putValue("AB", btn_AB.isChecked(), "user_info");
+            pref.putValue("O", btn_O.isChecked(), "user_info");
+            pref.putValue("Auto_Login_enabled", true, "user_info");
+
+            Intent intent = new Intent(this, MainActivity.class);
+            Toast.makeText(PersonalDataRegister.this, "정보가 저장되었습니다!", Toast.LENGTH_SHORT).show();
+            finish();
+            startActivity(intent);
         }
-
-        pref.putValue("남", men.isChecked(),"user_info");
-        pref.putValue("여", women.isChecked(), "user_info");
-        pref.putValue("RH+", rh_plus.isChecked(),"user_info");
-        pref.putValue("RH-", rh_minus.isChecked(), "user_info");
-        pref.putValue("A", btn_A.isChecked(), "user_info");
-        pref.putValue("B", btn_B.isChecked(), "user_info");
-        pref.putValue("AB", btn_AB.isChecked(), "user_info");
-        pref.putValue("O", btn_O.isChecked(), "user_info");
-        pref.putValue("Auto_Login_enabled", true, "user_info");
-
-
-        Intent intent = new Intent(this, MainActivity.class);
-        Toast.makeText(PersonalDataRegister.this, "정보가 저장되었습니다!", Toast.LENGTH_SHORT).show();
-        finish();
-        startActivity(intent);
     }
 
     //만약 저장된 정보가 아무것도 없을 경우, 임의의 값들로 설정해서 보여줌
