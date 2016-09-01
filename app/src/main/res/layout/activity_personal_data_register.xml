@@ -22,123 +22,210 @@
         android:layout_height="wrap_content"
         android:id="@+id/relativeLayout" />
 
-    <TextView
-        android:id="@+id/ID_Text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:id="@+id/imageView"
+        android:src="@drawable/text_image"
+        android:layout_alignStart="@+id/btn_send"
+        android:layout_above="@+id/layout1"
         android:layout_below="@+id/relativeLayout"
-        android:text="이름"
-        android:layout_centerHorizontal="true" />
-
-    <EditText
-        android:id="@+id/input_ID"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:ems="10"
-        android:layout_below="@+id/ID_Text"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignEnd="@+id/btn_send" />
 
 
-    <TextView
-        android:id="@+id/Sex_Text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="성별"
-        android:layout_below="@+id/input_ID"
-        android:layout_centerHorizontal="true" />
 
-    <RadioGroup
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+    <LinearLayout
         android:orientation="horizontal"
-        android:layout_alignParentStart="true"
-        android:gravity="center_horizontal"
-        android:id="@+id/radioGroup"
-        android:layout_below="@+id/Sex_Text"
-        android:layout_centerHorizontal="true">
-
-        <RadioButton
-            android:id="@+id/Men"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="남자" />
-
-        <RadioButton
-            android:id="@+id/Women"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="여자" />
-
-    </RadioGroup>
-
-    <TextView
-        android:id="@+id/Age_Text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="나이"
-        android:layout_below="@+id/radioGroup"
-        android:layout_centerHorizontal="true" />
-
-    <EditText
-        android:id="@+id/input_Age"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:gravity="center_horizontal"
-        android:ems="10"
-        android:layout_below="@+id/Age_Text"
-        android:layout_centerHorizontal="true" />
-
-    <TextView
-        android:id="@+id/Blood_Text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="혈액형"
-        android:layout_below="@+id/input_Age"
-        android:layout_centerHorizontal="true" />
-
-
-
-    <RadioGroup
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/radioGroup1"
-        android:gravity="center_horizontal"
+        android:layout_height="45dp"
+        android:weightSum="1"
+        android:id="@+id/layout1"
+        android:background="#ffffff"
+        android:gravity="center"
+        android:layout_above="@+id/linearLayout"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/Blood_Text"
-        android:layout_centerHorizontal="true">
+        android:layout_marginTop="5dp">
 
-        <RadioButton
-            android:id="@+id/rh_plus"
+        <TextView
+            android:orientation="horizontal"
+            android:id="@+id/ID_Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Rh+" />
+            android:layout_weight="0.3"
+            android:text="이름"
+            android:layout_below="@+id/relativeLayout"
+            android:textColor="#000000"
+            android:textSize="18dp"
+            android:layout_marginLeft="20dp" />
 
-        <RadioButton
-            android:id="@+id/rh_minus"
+        <EditText
+            android:id="@+id/input_ID"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Rh-" />
-    </RadioGroup>
+            android:ems="10"
+            android:layout_weight="0.7"
+            android:layout_gravity="center"
+            android:hint="이름"
+            android:background="@null"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:orientation="horizontal"
+        android:id="@+id/linearLayout"
+        android:background="#ffffff"
+        android:gravity="center"
+        android:layout_above="@+id/layout3"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:id="@+id/Sex_Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.15"
+            android:text="성별"
+            android:textSize="18dp"
+            android:textColor="#000000"
+            android:layout_marginLeft="20dp" />
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.85"
+            android:orientation="horizontal"
+            android:id="@+id/radioGroup"
+            android:layout_below="@+id/Sex_Text">
+
+            <RadioButton
+                android:id="@+id/Men"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:text="남자"
+                android:layout_marginRight="15dp" />
+
+            <RadioButton
+                android:id="@+id/Women"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+
+                android:text="여자" />
+
+        </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:orientation="horizontal"
+        android:id="@+id/layout3"
+        android:background="#ffffff"
+        android:gravity="center"
+        android:layout_above="@+id/layout4"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:id="@+id/Age_Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:text="나이"
+            android:textSize="18dp"
+            android:textColor="#000000"
+            android:layout_marginLeft="20dp" />
+
+        <EditText
+            android:id="@+id/input_Age"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.7"
+            android:background="@null"
+            android:inputType="number"
+            android:ems="10"
+            android:layout_toEndOf="@+id/btn_send"
+            android:hint="나이"
+            android:layout_gravity="center" />
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:orientation="horizontal"
+        android:id="@+id/layout4"
+        android:background="#ffffff"
+        android:gravity="center"
+        android:layout_above="@+id/spinner"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:id="@+id/Blood_Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.09"
+            android:text="혈액형"
+            android:layout_below="@+id/input_Age"
+            android:textSize="18dp"
+            android:textColor="#000000"
+            android:layout_marginLeft="20dp" />
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.91"
+            android:orientation="horizontal"
+            android:id="@+id/radioGroup1"
+            android:layout_below="@+id/layout4"
+            android:layout_alignParentEnd="true">
+
+            <RadioButton
+                android:id="@+id/rh_plus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:text="Rh+"
+                android:layout_marginRight="15dp" />
+
+            <RadioButton
+                android:id="@+id/rh_minus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:text="Rh-" />
+        </RadioGroup>
+
+    </LinearLayout>
+
 
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/radioGroup1"
-        android:layout_centerHorizontal="true" />
+        android:background="#ffffff"
+        android:layout_above="@+id/btn_send"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="5dp" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
         android:text="확인"
         android:id="@+id/btn_send"
-        android:layout_below="@+id/spinner"
-        android:layout_centerHorizontal="true" />
+        android:layout_marginBottom="44dp"
+        android:textColor="#000000"
+        android:foreground="#fffcfc"
+        android:textSize="18dp"
+        android:background="@drawable/button_style"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp" />
 
 </RelativeLayout>
 
