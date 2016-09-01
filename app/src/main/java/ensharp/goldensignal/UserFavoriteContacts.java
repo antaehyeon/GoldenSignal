@@ -71,8 +71,10 @@ public class UserFavoriteContacts extends ActionBarActivity {
         for (int i = 0; i < 3; i++) {
             name = pref.getValue(Integer.toString(i), "no", "name");
             phoneNumber = pref.getValue(Integer.toString(i), "no", "phoneNum");
-            if (!name.equals("no"))
+            if (!name.equals("no")) {
                 saveList.add(new Contacts(name, phoneNumber, false));
+            }
+
         }
 
         clickable = new boolean[3];

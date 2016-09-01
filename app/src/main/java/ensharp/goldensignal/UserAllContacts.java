@@ -76,7 +76,7 @@ public class UserAllContacts extends ActionBarActivity {
                 // 요소값 얻기
                 name = cursor.getString(1);  //이름
                 //String  += "\n";
-                phoneNumber = makePhoneNumber(cursor.getString(2));
+                phoneNumber = cursor.getString(2);
                 //count++;
                 for (int i = 0; i < 3; i++) {
                     if (name.equals(existList.get(i).name) && phoneNumber.equals(existList.get(i).phoneNum)) {
@@ -146,6 +146,7 @@ public class UserAllContacts extends ActionBarActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
+            String changedPhoneNum;
             ViewHolder holder = null;
             Log.v("ConvertView", String.valueOf(position));
             if (convertView == null) {
@@ -192,7 +193,8 @@ public class UserAllContacts extends ActionBarActivity {
 
             Contacts contacts = contactList.get(position);
             holder.name.setText(contacts.getName());
-            holder.phoneNumber.setText(contacts.getPhoneNum());
+            changedPhoneNum = makePhoneNumber(contacts.getPhoneNum());
+            holder.phoneNumber.setText(changedPhoneNum);
             holder.checkBox.setChecked(contacts.getisChecked());
             holder.checkBox.setTag(contacts);
             return convertView;
