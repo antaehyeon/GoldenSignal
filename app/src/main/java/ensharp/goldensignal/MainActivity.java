@@ -275,25 +275,11 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                         for (int i = 0; i < chars.length; i++) {
                             sbu.append((char) Integer.parseInt(chars[i]));
                         }
-//                        if(str != null)
-//                        {
-//                            sTextView.setText(str + "<-- " + sbu);
-//                            str += ("<-- " + sbu.toString());
-//                        }
-//                        else
-//                        {
-//                            sTextView.setText("<-- " + sbu);
-//                            str = "<-- " + sbu.toString();
-//                        }
-                        String strName = "사고자 이름";
-                        //String myPhoneNumber = "01048862255";
 
-                        // 핸드폰번호 얻기 - 010-0000-0000
+                        String strName = "사고자 이름";
+
                         TelephonyManager telManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
                         myPhoneNumber = telManager.getLine1Number();
-
-                        //textView.setText(myPhoneNumber);
-
 
                         String total = "사고자 : " + strName + '\n' + "연락처 : " + myPhoneNumber + '\n' + "사고가 났습니다. 도와주세요.";
 
@@ -401,7 +387,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         }
 
         mLocationManager.addGpsStatusListener(this);
-
     }
 
     @Override
