@@ -74,7 +74,6 @@ public class UserFavoriteContacts extends ActionBarActivity {
             if (!name.equals("no")) {
                 saveList.add(new Contacts(name, phoneNumber, false));
             }
-
         }
 
         clickable = new boolean[3];

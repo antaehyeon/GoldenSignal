@@ -77,10 +77,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private InputStream inputStream;
     private StringBuffer sbu;
     private Context mContext;
-    String myPhoneNumber;
     ensharp.goldensignal.SharedPreferences pref;
     boolean isBluetoothPairing;
     boolean isSendMMS;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mContext = this;
@@ -161,13 +161,13 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 if (_bluetooth.isEnabled()) {
                     bluetoothPair();
                     start.setText("주행 종료");
-                    data.setRunning(true);
+
 //                time.setBase(SystemClock.elapsedRealtime() - data.getTime());
 //                time.start();
                     data.setFirstTime(true);
                     startService(new Intent(getBaseContext(), GpsServices.class));
                     Toast.makeText(this, "주행을 시작합니다", Toast.LENGTH_SHORT).show();
-
+                    data.setRunning(true);
                     //reset.setVisibility(View.INVISIBLE);
                 } else {
                     Toast.makeText(this, "블루투스 연결이 불가합니다", Toast.LENGTH_SHORT).show();
@@ -244,17 +244,15 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                             sbu.append((char) Integer.parseInt(chars[i]));
                         }
 
-                        String strName = "사고자 이름";
-
-                        TelephonyManager telManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                        myPhoneNumber = telManager.getLine1Number();
-
-
-
-                        String total = "사고자 : " + strName + '\n' + "연락처 : " + myPhoneNumber + '\n' + "사고가 났습니다. 도와주세요." + '\n' + "위도 : " + myLocation.getLatitude() + '\n' + "경도 : " + myLocation.getAltitude();
-
-                        if (!isSendMMS  && (0.01 <= mySpeed )&&(mySpeed <= 1.0)){ // 속도 범위 추가 (상황에 따라서 다시 바꿀 필요 있음
-                            sendSMS("01048862255", total);
+                        if (!isSendMMS) {
+                            //if (!isSendMMS && (0.01 <= mySpeed) && (mySpeed <= 1.0)) { // 속도 범위 추가 (상황에 따라서 다시 바꿀 필요 있음
+                            sendSMS("01048862255", reportContent());
+                            for (int i = 0; i < 3; i++) {
+                                String phoneNumber = pref.getValue(Integer.toString(i), "no", "phoneNum");
+                                if (!phoneNumber.equals("no")) {
+                                    sendSMS(phoneNumber, "사고가 났습니다. 도와주세요.");
+                                }
+                            }
                             isSendMMS = true;
                         } else {
                             Toast.makeText(MainActivity.this, "자동신고 문자가 발송되지 않았습니다.", Toast.LENGTH_SHORT).show();
@@ -276,6 +274,49 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 }
             }
         }
+    }
+
+    public String reportContent() {
+
+        String total;
+        TelephonyManager telManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        String myPhoneNumber = telManager.getLine1Number();
+        String name = pref.getValue("이름", "", "user_info");
+        String age = pref.getValue("나이", "", "user_info");
+        String sex;
+        String rhType;
+        String bloodType;
+
+        if (pref.getValue("남", true, "user_info")) {
+            sex = "남자";
+        } else {
+            sex = "여자";
+        }
+
+        if(pref.getValue("RH+", true, "user_info")) {
+            rhType = "RH+";
+        } else {
+            rhType = "RH-";
+        }
+
+        if (pref.getValue("A", true, "user_info")) {
+            bloodType = "A형";
+        } else if (pref.getValue("B", true, "user_info")){
+            bloodType = "B형";
+        } else if (pref.getValue("AB", true, "user_info")){
+            bloodType = "AB형";
+        } else {
+            bloodType = "O형";
+        }
+
+        total = "오토바이 사고발생" + '\n' +
+                "위도 : " + myLocation.getLatitude() + '\n' +
+                "경도 : " + myLocation.getAltitude() + '\n' +
+                "사고자 : " + name + '\n' +
+                "연락처 : " + myPhoneNumber + '\n' +
+                sex + ", " + age + ", " + rhType + ", " + bloodType;
+
+        return total;
     }
 
     public void sendSMS(String smsNumber, String total) {
@@ -436,7 +477,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
                 if (satsUsed == 0) {
                     //start.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_play));
-                    start.setText("주행 시작");
+                    //start.setText("주행 시작"); --> 이거 해제해야함
                     drivingLayout.setVisibility(View.INVISIBLE);
                     //data.setRunning(true);
                     //status.setText("");
@@ -450,7 +491,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                         Toast.makeText(this, "현재 GPS 확인이 불가합니다", Toast.LENGTH_SHORT).show();
                     }
                     drivingLayout.setVisibility(View.INVISIBLE);
-                    data.setRunning(false);
+                    //data.setRunning(false); --> 이거 해제해야함
                     firstfix = true;
                 }
                 break;
