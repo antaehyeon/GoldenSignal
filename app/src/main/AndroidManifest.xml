@@ -32,7 +32,7 @@
 
         <activity android:name=".UserAllContacts"/>
         <activity android:name=".UserFavoriteContacts"/>
-        <activity android:name=".Send_MMS"></activity>
+        <activity android:name=".BluetoothRegister"></activity>
 
         <activity
             android:name=".DiscoveryActivity">

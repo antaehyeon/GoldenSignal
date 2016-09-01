@@ -5,5 +5,6 @@
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_user_favorite_contacts" android:title="@string/phonenumber"
         android:orderInCategory="100" app:showAsAction="never" />
-
+    <item android:id="@+id/action_blutooth_register" android:title="블루투스 연결"
+        android:orderInCategory="100" app:showAsAction="never" />
 </menu>
