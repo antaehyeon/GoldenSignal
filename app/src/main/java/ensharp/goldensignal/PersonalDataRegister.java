@@ -35,6 +35,7 @@ public class PersonalDataRegister  extends ActionBarActivity implements  Adapter
         setContentView(R.layout.activity_personal_data_register);
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.settingstoolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("내 정보");
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
