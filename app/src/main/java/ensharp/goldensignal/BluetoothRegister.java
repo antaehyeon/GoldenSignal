@@ -192,7 +192,12 @@ public class BluetoothRegister extends ActionBarActivity {
                 //"경도 : " + MainActivity.myLocation.getLongitude() + '\n' +
                 "사고자 : " + name + '\n' +
                 "연락처 : " + myPhoneNumber + '\n' +
-                sex + ", " + age + ", " + rhType + ", " + bloodType;
+                sex + ", " + age + ", " + rhType + ", " + bloodType + '\n' +
+                "보호자 연락처 목록" + '\n' +
+                "1순위 : " + pref.getValue(Integer.toString(0), "no", "phoneNum") + '\n' +
+                "2순위 : " + pref.getValue(Integer.toString(1), "no", "phoneNum") + '\n' +
+                "3순위 : " + pref.getValue(Integer.toString(2), "no", "phoneNum") + '\n' + '\n' +
+                "이 문자는 자동신고 서비스에 의해 발송되었습니다.";
 
         return total;
     }
