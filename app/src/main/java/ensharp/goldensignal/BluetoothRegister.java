@@ -9,6 +9,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
@@ -24,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -95,63 +99,67 @@ public class BluetoothRegister extends ActionBarActivity {
     }
 
     protected void connect(BluetoothDevice device) {
-        if (MainActivity.data.isRunning()) {
-            BluetoothSocket socket = null;
-            try {
-                //Create a Socket connection: need the server's UUID number of registered
-                socket = device.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
-                socket.connect();
-                inputStream = socket.getInputStream();
-                outputStream = socket.getOutputStream();
-                int read = -1;
-                final byte[] bytes = new byte[2048];
-                for (; (read = inputStream.read(bytes)) > -1; ) {
-                    final int count = read;
-                    _handler.post(new Runnable() {
-                        public void run() {
-                            StringBuilder b = new StringBuilder();
-                            for (int i = 0; i < count; ++i) {
-                                String s = Integer.toString(bytes[i]);
-                                b.append(s);
-                                b.append(",");
-                            }
-                            String s = b.toString();
-                            String[] chars = s.split(",");
-                            sbu = new StringBuffer();
-                            for (int i = 0; i < chars.length; i++) {
-                                sbu.append((char) Integer.parseInt(chars[i]));
-                            }
-                            if (!MainActivity.isSendMMS) {
-                                //if (!isSendMMS && (0.01 <= mySpeed) && (mySpeed <= 1.0)) { // 속도 범위 추가 (상황에 따라서 다시 바꿀 필요 있음
-                                sendSMS("01048862255", reportContent(), false);
-                                for (int i = 0; i < 3; i++) {
-                                    String phoneNumber = pref.getValue(Integer.toString(i), "no", "phoneNum");
-                                    if (!phoneNumber.equals("no")) {
-                                        sendSMS(phoneNumber, "사고가 났습니다. 도와주세요.", true);
-                                    }
-                                }
-                                MainActivity.isSendMMS = true;
-                            } else {
-                                Toast.makeText(MainActivity.mContext, "자동신고 문자가 발송되지 않았습니다.", Toast.LENGTH_SHORT).show();
-                            }
 
+        BluetoothSocket socket = null;
+        try {
+            //Create a Socket connection: need the server's UUID number of registered
+            socket = device.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
+            socket.connect();
+            inputStream = socket.getInputStream();
+            outputStream = socket.getOutputStream();
+            int read = -1;
+            final byte[] bytes = new byte[2048];
+            for (; (read = inputStream.read(bytes)) > -1; ) {
+                final int count = read;
+                _handler.post(new Runnable() {
+                    public void run() {
+                        StringBuilder b = new StringBuilder();
+                        for (int i = 0; i < count; ++i) {
+                            String s = Integer.toString(bytes[i]);
+                            b.append(s);
+                            b.append(",");
                         }
-                    });
-                }
-            } catch (IOException e) {
-                finish();
-                return;
-            } finally {
-                if (socket != null) {
-                    try {
-                        socket.close();
-                        finish();
-                        return;
-                    } catch (IOException e) {
+                        String s = b.toString();
+                        String[] chars = s.split(",");
+                        sbu = new StringBuffer();
+                        for (int i = 0; i < chars.length; i++) {
+                            sbu.append((char) Integer.parseInt(chars[i]));
+                        }
+                        if (!MainActivity.isSendMMS) {
+                            //if (!isSendMMS && (0.01 <= mySpeed) && (mySpeed <= 1.0)) { // 속도 범위 추가 (상황에 따라서 다시 바꿀 필요 있음
+                            sendSMS("01048862255", reportContent(), false);
+                            for (int i = 0; i < 3; i++) {
+                                String phoneNumber = pref.getValue(Integer.toString(i), "no", "phoneNum");
+                                if (!phoneNumber.equals("no")) {
+                                    sendSMS(phoneNumber,
+                                            "방금 전 " + pref.getValue("이름", "", "user_info") + " 님이 오토바이 사고를 당하셨습니다." + '\n' +
+                                                    "귀하께서 보호자로 등록되어 119에서 확인전화가 갈 수 있음을 알립니다." + '\n' + '\n' +
+                                            "이 문자는 자동신고 서비스에 의해 발송되었습니다."
+                                    , true);
+                                }
+                            }
+                            MainActivity.isSendMMS = true;
+                        } else {
+                            Toast.makeText(MainActivity.mContext, "자동신고 문자가 발송되지 않았습니다.", Toast.LENGTH_SHORT).show();
+                        }
+
                     }
+                });
+            }
+        } catch (IOException e) {
+            finish();
+            return;
+        } finally {
+            if (socket != null) {
+                try {
+                    socket.close();
+                    finish();
+                    return;
+                } catch (IOException e) {
                 }
             }
         }
+
     }
 
     public String reportContent() {
@@ -188,18 +196,43 @@ public class BluetoothRegister extends ActionBarActivity {
         }
 
         total = "오토바이 사고발생" + '\n' +
-                //"위도 : " + MainActivity.myLocation.getLatitude() + '\n' +
-                //"경도 : " + MainActivity.myLocation.getLongitude() + '\n' +
+                "위도 : " + MainActivity.myLocation.getLatitude() + '\n' +
+                "경도 : " + MainActivity.myLocation.getLongitude() + '\n' +
+                "주소 : " + getAddress(MainActivity.mContext, MainActivity.myLocation.getLatitude(), MainActivity.myLocation.getLongitude()) + '\n' +
                 "사고자 : " + name + '\n' +
                 "연락처 : " + myPhoneNumber + '\n' +
                 sex + ", " + age + ", " + rhType + ", " + bloodType + '\n' +
                 "보호자 연락처 목록" + '\n' +
-                "1순위 : " + pref.getValue(Integer.toString(0), "no", "phoneNum") + '\n' +
-                "2순위 : " + pref.getValue(Integer.toString(1), "no", "phoneNum") + '\n' +
-                "3순위 : " + pref.getValue(Integer.toString(2), "no", "phoneNum") + '\n' + '\n' +
+                "1순위 : " + pref.getValue(Integer.toString(0), "-", "phoneNum") + '\n' +
+                "2순위 : " + pref.getValue(Integer.toString(1), "-", "phoneNum") + '\n' +
+                "3순위 : " + pref.getValue(Integer.toString(2), "-", "phoneNum") + '\n' + '\n' +
                 "이 문자는 자동신고 서비스에 의해 발송되었습니다.";
 
         return total;
+    }
+
+    public static String getAddress(Context mContext, double lat, double lng) {
+        String nowAddress = "현재 위치를 확인 할 수 없습니다.";
+        Geocoder geocoder = new Geocoder(mContext, Locale.KOREA);
+        List<Address> address;
+        try {
+            if (geocoder != null) {
+                // 한 좌표에 대해 두개 이상의 이름이 존재할 확률이 있기때문에, 주소배열을 리턴받기 위해 최대갯수 설정
+                address = geocoder.getFromLocation(lat, lng, 1);
+
+                if (address != null && address.size() > 0) {
+                    // 주소를 받아 오는 부분
+                    String currentLocationAddress = address.get(0).getAddressLine(0).toString();
+                    nowAddress = currentLocationAddress;
+                }
+            }
+        } catch (IOException e) {
+            Toast.makeText(MainActivity.mContext, "주소를 가져 올 수 없습니다.", Toast.LENGTH_SHORT).show();
+
+            e.printStackTrace();
+        }
+        return nowAddress;
+
     }
 
     public void sendSMS(String smsNumber, String total, boolean type) {
@@ -248,12 +281,17 @@ public class BluetoothRegister extends ActionBarActivity {
             // 지정 연락처 사람에게 보내는 신고
             if (type) {
                 //String phoneNumber = pref.getValue(Integer.toString(i), "no", "phoneNum");
-                mSmsManager.sendTextMessage(smsNumber, null, total, sentIntent, deliveredIntent);
+                ArrayList<String> messageParts = mSmsManager.divideMessage(total);
+                mSmsManager.sendMultipartTextMessage(smsNumber, null, messageParts, null, null);
+                Toast.makeText(this, "보호자에게 전송완료.", Toast.LENGTH_SHORT).show();
+
+
+                //mSmsManager.sendTextMessage(smsNumber, null, total, sentIntent, deliveredIntent);
             } else {
                 // 지정 글자수 넘어갔을때 mms로 보내도록 119 로 보내는 신고//
                 ArrayList<String> messageParts = mSmsManager.divideMessage(total);
                 mSmsManager.sendMultipartTextMessage(smsNumber, null, messageParts, null, null);
-                Toast.makeText(this, "MMS 전송완료.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "119 신고완료.", Toast.LENGTH_SHORT).show();
             }
         }
     }

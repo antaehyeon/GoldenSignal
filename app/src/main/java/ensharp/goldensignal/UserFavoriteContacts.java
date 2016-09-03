@@ -145,7 +145,7 @@ public class UserFavoriteContacts extends ActionBarActivity {
             personImage = resizeImage("none_select", 220, 220);
             //personImage = BitmapFactory.decodeResource(getResources(), R.drawable.none_select);
             personFace.setImageBitmap(personImage);
-            personName.setText("-");
+            personName.setText("");
             clickable[j] = false;
             if (j == 0) {
                 imageLayout1.setBackgroundResource(R.drawable.circle_black_style);
@@ -370,7 +370,7 @@ public class UserFavoriteContacts extends ActionBarActivity {
         matchIndex(index);
         personImage = resizeImage("none_select", 220, 220);
         personFace.setImageBitmap(personImage);
-        personName.setText("-");
+        personName.setText("");
         clickable[index] = false;
         if (index == 0) {
             pushLayout1.setVisibility(View.INVISIBLE);

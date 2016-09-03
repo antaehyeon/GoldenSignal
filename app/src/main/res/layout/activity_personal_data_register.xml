@@ -260,14 +260,14 @@
         android:layout_height="50dp"
         android:text="확인"
         android:id="@+id/btn_send"
-        android:layout_marginBottom="44dp"
+        android:layout_marginBottom="25dp"
         android:textColor="#000000"
         android:foreground="#fffcfc"
         android:textSize="18dp"
         android:background="@drawable/button_style"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp" />
+        android:layout_marginTop="20dp" />
 
 </RelativeLayout>
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GoldenSignal</string>
+    <string name="app_name">Golden Signal</string>
     <string name="time">Time</string>
     <string name="waiting_for_gps">GPS 신호를 기다리고 있습니다...</string>
     <string name="gps_disabled">GPS 사용불가</string>

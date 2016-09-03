@@ -79,7 +79,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
         /* HYEON
             Splash Activity ADD */
-        startActivity(new Intent(this, SplashActivity.class));
+        //startActivity(new Intent(this, SplashActivity.class));
+
+
+
 
         pref = new ensharp.goldensignal.SharedPreferences(this);
         if (!pref.getValue("Auto_Login_enabled", false, "user_info")) {
@@ -91,6 +94,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Golden Signal");
         start = (Button) findViewById(R.id.start);
         //start.setVisibility(View.INVISIBLE); --> 이거 다시 주석해제
         //reset = (Button) findViewById(R.id.reset);
@@ -241,7 +245,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         //Toast.makeText(this, "onLocationChanged 실행", Toast.LENGTH_SHORT).show();
         if (location.hasAccuracy()) {
             if (firstfix) {
-                drivingLayout.setVisibility(View.VISIBLE);
+                //drivingLayout.setVisibility(View.VISIBLE);
                 //status.setText("");
                 //statusLayout.setVisibility(View.GONE);
                 //start.setVisibility(View.VISIBLE);
