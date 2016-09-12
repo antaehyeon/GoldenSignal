@@ -104,15 +104,22 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                         }
                     }
                 }
+
             }
         });
+
+
+
         // Handle Send button
-        btnSend.setOnClickListener(new View.OnClickListener() {
+        btnSend.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 EditText editText = (EditText) findViewById(R.id.sendText);
                 String message = editText.getText().toString();
                 byte[] value;
+
                 try {
                     //send data to service
                     value = message.getBytes("UTF-8");
@@ -122,7 +129,10 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                     listAdapter.add("["+currentDateTimeString+"] TX: "+ message);
                     messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
                     edtMessage.setText("");
-                } catch (UnsupportedEncodingException e) {
+                }
+
+                catch (UnsupportedEncodingException e)
+                {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -144,6 +154,7 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                 finish();
             }
 
+
         }
 
         public void onServiceDisconnected(ComponentName classname) {
@@ -158,12 +169,15 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
         //Handler events that received from UART service
         public void handleMessage(Message msg) {
 
+
         }
     };
 
     private final BroadcastReceiver UARTStatusChangeReceiver = new BroadcastReceiver() {
 
+
         public void onReceive(Context context, Intent intent) {
+
             String action = intent.getAction();
 
             final Intent mIntent = intent;
@@ -313,6 +327,7 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
 
+
             case REQUEST_SELECT_DEVICE:
                 //When the DeviceListActivity return, with the selected device address
                 if (resultCode == Activity.RESULT_OK && data != null) {
@@ -323,9 +338,13 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                     ((TextView) findViewById(R.id.deviceName)).setText(mDevice.getName()+ " - connecting");
                     mService.connect(deviceAddress);
 
+                    Intent intent = new Intent(BluetoothRegister.this, MainActivity.class);
+                    BluetoothRegister.this.startActivity(intent);
+
 
                 }
                 break;
+
             case REQUEST_ENABLE_BT:
                 // When the request to enable Bluetooth returns
                 if (resultCode == Activity.RESULT_OK) {
