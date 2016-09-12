@@ -36,14 +36,8 @@
         <activity android:name=".UserAllContacts" />
         <activity android:name=".UserFavoriteContacts" />
         <activity android:name=".BluetoothRegister"></activity>
-
-        <activity android:name=".DiscoveryActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
+        <activity android:name=".DeviceListActivity" android:label="@string/app_name" android:theme="@android:style/Theme.Dialog"/>
+        <service android:enabled="true" android:name=".UartService" />
     </application>
 
 </manifest>
