@@ -5,13 +5,17 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetFileDescriptor;
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -27,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -71,6 +76,15 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     boolean isBluetoothPairing;
     public static boolean isSendMMS;
 
+    private static final int MILLISINFUTURE = 11 * 2000;
+    private static final int COUNT_DOWN_INTERVAL = 1000;
+    int count;
+    private CustomDialog mCustomDialog;
+    CountDownTimer countDownTimer;
+    Vibrator vibrator;
+    MediaPlayer mp;
+    boolean soundOn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mContext = this;
@@ -80,8 +94,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         /* HYEON
             Splash Activity ADD */
         //startActivity(new Intent(this, SplashActivity.class));
-
-
 
 
         pref = new ensharp.goldensignal.SharedPreferences(this);
@@ -144,7 +156,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             Intent intent = new Intent(this, UserFavoriteContacts.class);
             startActivity(intent);
             return true;
-        }  else if (id == R.id.action_blutooth_register) {
+        } else if (id == R.id.action_blutooth_register) {
             Intent intent = new Intent(this, BluetoothRegister.class);
             startActivity(intent);
             return true;
@@ -159,7 +171,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 Toast.makeText(this, "단말기 설정에서 '위치 서비스'사용을 허용해주세요", Toast.LENGTH_SHORT).show();
             } else {
                 if (_bluetooth.isEnabled()) {
-                   // bluetoothPair();
+                    // bluetoothPair();
                     start.setText("주행 종료");
 //                time.setBase(SystemClock.elapsedRealtime() - data.getTime());
 //                time.start();
@@ -173,6 +185,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                     s.setSpan(new RelativeSizeSpan(0.25f), s.length() - 3, s.length(), 0);
                     currentSpeed.setText(s);
                     //reset.setVisibility(View.INVISIBLE);
+                    soundOn=false;
                 } else {
                     Toast.makeText(this, "블루투스 연결이 불가합니다", Toast.LENGTH_SHORT).show();
                 }
@@ -189,6 +202,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             stopService(new Intent(getBaseContext(), GpsServices.class));
             //_bluetooth.disable();
 //            reset.setVisibility(View.VISIBLE);
+            soundOn=false;
         }
     }
 
@@ -197,6 +211,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 //        resetData();
 //        stopService(new Intent(getBaseContext(), GpsServices.class));
 //    }
+
+
+
 
     @Override
     protected void onResume() {

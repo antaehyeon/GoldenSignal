@@ -9,12 +9,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.res.AssetFileDescriptor;
 import android.content.res.Configuration;
-import android.net.Uri;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.Vibrator;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +29,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.util.Date;
@@ -49,6 +53,16 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
     private ArrayAdapter<String> listAdapter;
     private Button btnConnectDisconnect,btnSend;
     private EditText edtMessage;
+
+    private static final int MILLISINFUTURE = 11 * 300;
+    private static final int COUNT_DOWN_INTERVAL = 1000;
+    int count;
+    private CustomDialog mCustomDialog;
+    CountDownTimer countDownTimer;
+    Vibrator vibrator;
+    MediaPlayer mp;
+    boolean soundOn;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -164,6 +178,87 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
         }
     };
 
+
+    public void countDownTimer() {
+
+
+        countDownTimer = new CountDownTimer(MILLISINFUTURE, COUNT_DOWN_INTERVAL) {
+
+            public void onTick(long millisUntilFinished) {
+                playSound();
+                CustomDialog.setCountTxt(String.valueOf(count));
+                vibrator.vibrate(500);
+                count--;
+
+            }
+
+            public void onFinish() {
+
+                CustomDialog.setCountTxt(String.valueOf("신고완료"));
+                mp.stop();
+                mCustomDialog.dismiss();
+
+                String message = "1";
+                byte[] value;
+                try {
+                    //send data to service
+                    value = message.getBytes("UTF-8");
+                    mService.writeRXCharacteristic(value);
+                    //Update the log with time stamp
+                    String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+                    listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
+                    messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
+                } catch (UnsupportedEncodingException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+            }
+        };
+    }
+
+    public void playSound() {
+
+        try {
+            mp.reset();
+            AssetFileDescriptor afd;
+            afd = getAssets().openFd("alarmsound.mp3");
+            mp.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            mp.prepare();
+            mp.start();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initiateAlertDialog() {
+        try {
+            mCustomDialog = new CustomDialog(MainActivity.mContext, cancelClickListener);
+            vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            mp = new MediaPlayer();
+            count = 3;
+            countDownTimer();
+            countDownTimer.start();
+            mCustomDialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //팝업창 닫기
+    private View.OnClickListener cancelClickListener =
+            new View.OnClickListener() {
+
+                public void onClick(View v) {
+                    countDownTimer.cancel();
+                    mp.stop();
+                    mCustomDialog.dismiss();
+
+                }
+            };
+
     private final BroadcastReceiver UARTStatusChangeReceiver = new BroadcastReceiver() {
 
 
@@ -220,12 +315,13 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                 runOnUiThread(new Runnable() {
                     public void run() {
                         try {
-                            Uri uri = Uri.parse("content://media/external/images/media/23");
-                            Intent it = new Intent(Intent.ACTION_SEND);
-                            it.putExtra("sms_body", "오토바이 사고입니다." );
-                            it.putExtra(Intent.EXTRA_STREAM, uri);
-                            it.setType("image/png");
-                            startActivity(it);
+                            initiateAlertDialog();
+//                            Uri uri = Uri.parse("content://media/external/images/media/23");
+//                            Intent it = new Intent(Intent.ACTION_SEND);
+//                            it.putExtra("sms_body", "오토바이 사고입니다." );
+//                            it.putExtra(Intent.EXTRA_STREAM, uri);
+//                            it.setType("image/png");
+//                            startActivity(it);
 
                         } catch (Exception e) {
                             Log.e(TAG, e.toString());
