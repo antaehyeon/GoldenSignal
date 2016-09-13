@@ -16,13 +16,13 @@
     <string name="status">Status</string>
     <string name="llsWrite">LinkLossAlert</string>
     <string name="iasWrite">ImmediateAlert</string>
-    <string name="scanning">Scanning for devices...</string>
+    <string name="scanning">디바이스를 찾는 중입니다</string>
     <string name="no_ble_devices">No LE devices found.</string>
-    <string name="connected">Connected</string>
-    <string name="disconnected">Not connected</string>
-    <string name="ready">Ready</string>
+    <string name="connected">연결됨</string>
+    <string name="disconnected">연결불가</string>
+    <string name="ready">준비</string>
     <string name="disconnect">Disconnect</string>
-    <string name="connect">connect</string>
+    <string name="connect">연결</string>
     <string name="unpair">unpair</string>
     <string name="pair">pair</string>
     <string name="RadioButton1">Alert level high</string>
@@ -54,7 +54,7 @@
     <string name="popup_yes">YES</string>
     <string name="popup_no">NO</string>
     <string name="ble_not_supported">Bluetooth Low Energy not supported</string>
-    <string name="scan">Scan</string>
-    <string name="cancel">Cancel</string>
+    <string name="scan">찾기</string>
+    <string name="cancel">취소</string>
 
 </resources>

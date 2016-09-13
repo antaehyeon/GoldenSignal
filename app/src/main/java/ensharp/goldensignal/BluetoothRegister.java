@@ -73,13 +73,13 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
             finish();
             return;
         }
-        messageListView = (ListView) findViewById(R.id.listMessage);
-        listAdapter = new ArrayAdapter<String>(this, R.layout.message_detail);
-        messageListView.setAdapter(listAdapter);
-        messageListView.setDivider(null);
+        //messageListView = (ListView) findViewById(R.id.listMessage);
+//        listAdapter = new ArrayAdapter<String>(this, R.layout.message_detail);
+//        messageListView.setAdapter(listAdapter);
+//        messageListView.setDivider(null);
         btnConnectDisconnect = (Button) findViewById(R.id.btn_select);
-        btnSend = (Button) findViewById(R.id.sendButton);
-        edtMessage = (EditText) findViewById(R.id.sendText);
+        //btnSend = (Button) findViewById(R.id.sendButton);
+        //edtMessage = (EditText) findViewById(R.id.sendText);
         service_init();
 
 
@@ -92,7 +92,7 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                     Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                     startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
                 } else {
-                    if (btnConnectDisconnect.getText().equals("Connect")) {
+                    if (btnConnectDisconnect.getText().equals("제품 연결")) {
 
                         //Connect button pressed, open DeviceListActivity class, with popup windows that scan for devices
 
@@ -111,30 +111,30 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
         });
 
 
-        // Handle Send button
-        btnSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText editText = (EditText) findViewById(R.id.sendText);
-                String message = editText.getText().toString();
-                byte[] value;
-
-                try {
-                    //send data to service
-                    value = message.getBytes("UTF-8");
-                    mService.writeRXCharacteristic(value);
-                    //Update the log with time stamp
-                    String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-                    listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
-                    messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
-                    edtMessage.setText("");
-                } catch (UnsupportedEncodingException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-            }
-        });
+//        // Handle Send button
+//        btnSend.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                EditText editText = (EditText) findViewById(R.id.sendText);
+//                String message = editText.getText().toString();
+//                byte[] value;
+//
+//                try {
+//                    //send data to service
+//                    value = message.getBytes("UTF-8");
+//                    mService.writeRXCharacteristic(value);
+//                    //Update the log with time stamp
+//                    String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+//                    listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
+//                    messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
+//                    edtMessage.setText("");
+//                } catch (UnsupportedEncodingException e) {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//        });
 
         // Set initial UI state
 
@@ -196,9 +196,9 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                     value = message.getBytes("UTF-8");
                     mService.writeRXCharacteristic(value);
                     //Update the log with time stamp
-                    String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-                    listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
-                    messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
+                    //String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+                    //listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
+                    //messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
                 } catch (UnsupportedEncodingException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -264,12 +264,12 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                     public void run() {
                         String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
                         Log.d(TAG, "UART_CONNECT_MSG");
-                        btnConnectDisconnect.setText("Disconnect");
-                        edtMessage.setEnabled(true);
-                        btnSend.setEnabled(true);
-                        ((TextView) findViewById(R.id.deviceName)).setText(mDevice.getName() + " - ready");
-                        listAdapter.add("[" + currentDateTimeString + "] Connected to: " + mDevice.getName());
-                        messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
+//                        btnConnectDisconnect.setText("Disconnect");
+//                        edtMessage.setEnabled(true);
+//                        btnSend.setEnabled(true);
+//                        ((TextView) findViewById(R.id.deviceName)).setText(mDevice.getName() + " - ready");
+//                        listAdapter.add("[" + currentDateTimeString + "] Connected to: " + mDevice.getName());
+//                        messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
                         mState = UART_PROFILE_CONNECTED;
                     }
                 });
@@ -281,11 +281,11 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                     public void run() {
                         String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
                         Log.d(TAG, "UART_DISCONNECT_MSG");
-                        btnConnectDisconnect.setText("Connect");
-                        edtMessage.setEnabled(false);
-                        btnSend.setEnabled(false);
-                        ((TextView) findViewById(R.id.deviceName)).setText("Not Connected");
-                        listAdapter.add("[" + currentDateTimeString + "] Disconnected to: " + mDevice.getName());
+                        btnConnectDisconnect.setText("제품 연결");
+//                        edtMessage.setEnabled(false);
+//                        btnSend.setEnabled(false);
+//                        ((TextView) findViewById(R.id.deviceName)).setText("Not Connected");
+//                        listAdapter.add("[" + currentDateTimeString + "] Disconnected to: " + mDevice.getName());
                         mState = UART_PROFILE_DISCONNECTED;
                         mService.close();
                         //setUiState();
@@ -307,13 +307,6 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                     public void run() {
                         try {
                             initiateAlertDialog();
-//                            Uri uri = Uri.parse("content://media/external/images/media/23");
-//                            Intent it = new Intent(Intent.ACTION_SEND);
-//                            it.putExtra("sms_body", "오토바이 사고입니다." );
-//                            it.putExtra(Intent.EXTRA_STREAM, uri);
-//                            it.setType("image/png");
-//                            startActivity(it);
-
                         } catch (Exception e) {
                             Log.e(TAG, e.toString());
                         }
@@ -415,7 +408,7 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                     mDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceAddress);
 
                     Log.d(TAG, "... onActivityResultdevice.address==" + mDevice + "mserviceValue" + mService);
-                    ((TextView) findViewById(R.id.deviceName)).setText(mDevice.getName() + " - connecting");
+                    //((TextView) findViewById(R.id.deviceName)).setText(mDevice.getName() + " - connecting");
                     mService.connect(deviceAddress);
 
                     Intent intent = new Intent(BluetoothRegister.this, MainActivity.class);
