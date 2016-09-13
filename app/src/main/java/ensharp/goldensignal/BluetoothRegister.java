@@ -51,7 +51,7 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
     private BluetoothAdapter mBtAdapter = null;
     private ListView messageListView;
     private ArrayAdapter<String> listAdapter;
-    private Button btnConnectDisconnect,btnSend;
+    private Button btnConnectDisconnect, btnSend;
     private EditText edtMessage;
 
     private static final int MILLISINFUTURE = 11 * 300;
@@ -77,11 +77,10 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
         listAdapter = new ArrayAdapter<String>(this, R.layout.message_detail);
         messageListView.setAdapter(listAdapter);
         messageListView.setDivider(null);
-        btnConnectDisconnect=(Button) findViewById(R.id.btn_select);
-        btnSend=(Button) findViewById(R.id.sendButton);
+        btnConnectDisconnect = (Button) findViewById(R.id.btn_select);
+        btnSend = (Button) findViewById(R.id.sendButton);
         edtMessage = (EditText) findViewById(R.id.sendText);
         service_init();
-
 
 
         // Handle Disconnect & Connect button
@@ -92,9 +91,8 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                     Log.i(TAG, "onClick - BT not enabled yet");
                     Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                     startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-                }
-                else {
-                    if (btnConnectDisconnect.getText().equals("Connect")){
+                } else {
+                    if (btnConnectDisconnect.getText().equals("Connect")) {
 
                         //Connect button pressed, open DeviceListActivity class, with popup windows that scan for devices
 
@@ -102,8 +100,7 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                         startActivityForResult(newIntent, REQUEST_SELECT_DEVICE);
                     } else {
                         //Disconnect button pressed
-                        if (mDevice!=null)
-                        {
+                        if (mDevice != null) {
                             mService.disconnect();
 
                         }
@@ -114,13 +111,10 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
         });
 
 
-
         // Handle Send button
-        btnSend.setOnClickListener(new View.OnClickListener()
-        {
+        btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 EditText editText = (EditText) findViewById(R.id.sendText);
                 String message = editText.getText().toString();
                 byte[] value;
@@ -131,13 +125,10 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                     mService.writeRXCharacteristic(value);
                     //Update the log with time stamp
                     String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-                    listAdapter.add("["+currentDateTimeString+"] TX: "+ message);
+                    listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
                     messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
                     edtMessage.setText("");
-                }
-
-                catch (UnsupportedEncodingException e)
-                {
+                } catch (UnsupportedEncodingException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -276,8 +267,8 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                         btnConnectDisconnect.setText("Disconnect");
                         edtMessage.setEnabled(true);
                         btnSend.setEnabled(true);
-                        ((TextView) findViewById(R.id.deviceName)).setText(mDevice.getName()+ " - ready");
-                        listAdapter.add("["+currentDateTimeString+"] Connected to: "+ mDevice.getName());
+                        ((TextView) findViewById(R.id.deviceName)).setText(mDevice.getName() + " - ready");
+                        listAdapter.add("[" + currentDateTimeString + "] Connected to: " + mDevice.getName());
                         messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
                         mState = UART_PROFILE_CONNECTED;
                     }
@@ -294,7 +285,7 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                         edtMessage.setEnabled(false);
                         btnSend.setEnabled(false);
                         ((TextView) findViewById(R.id.deviceName)).setText("Not Connected");
-                        listAdapter.add("["+currentDateTimeString+"] Disconnected to: "+ mDevice.getName());
+                        listAdapter.add("[" + currentDateTimeString + "] Disconnected to: " + mDevice.getName());
                         mState = UART_PROFILE_DISCONNECTED;
                         mService.close();
                         //setUiState();
@@ -330,7 +321,7 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                 });
             }
             //*********************//
-            if (action.equals(UartService.DEVICE_DOES_NOT_SUPPORT_UART)){
+            if (action.equals(UartService.DEVICE_DOES_NOT_SUPPORT_UART)) {
                 showMessage("Device doesn't support UART. Disconnecting");
                 mService.disconnect();
             }
@@ -345,6 +336,7 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
 
         LocalBroadcastManager.getInstance(this).registerReceiver(UARTStatusChangeReceiver, makeGattUpdateIntentFilter());
     }
+
     private static IntentFilter makeGattUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(UartService.ACTION_GATT_CONNECTED);
@@ -354,6 +346,7 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
         intentFilter.addAction(UartService.DEVICE_DOES_NOT_SUPPORT_UART);
         return intentFilter;
     }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -371,7 +364,7 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
         }
         unbindService(mServiceConnection);
         mService.stopSelf();
-        mService= null;
+        mService = null;
 
     }
 
@@ -422,7 +415,7 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                     mDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceAddress);
 
                     Log.d(TAG, "... onActivityResultdevice.address==" + mDevice + "mserviceValue" + mService);
-                    ((TextView) findViewById(R.id.deviceName)).setText(mDevice.getName()+ " - connecting");
+                    ((TextView) findViewById(R.id.deviceName)).setText(mDevice.getName() + " - connecting");
                     mService.connect(deviceAddress);
 
                     Intent intent = new Intent(BluetoothRegister.this, MainActivity.class);
