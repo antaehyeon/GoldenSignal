@@ -179,15 +179,10 @@ public class DeviceListActivity extends Activity {
             }
         }
         
-        
         devRssiValues.put(device.getAddress(), rssi);
-        if (!deviceFound) {
+        if (!deviceFound&&device.getAddress().equals("C3:D8:44:BB:45:E6")) {
         	deviceList.add(device);
             mEmptyList.setVisibility(View.GONE);
-                 	
-        	
-
-            
             deviceAdapter.notifyDataSetChanged();
         }
     }

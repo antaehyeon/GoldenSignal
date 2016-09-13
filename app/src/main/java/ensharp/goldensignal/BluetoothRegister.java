@@ -414,7 +414,6 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                     Intent intent = new Intent(BluetoothRegister.this, MainActivity.class);
                     BluetoothRegister.this.startActivity(intent);
 
-
                 }
                 break;
 
