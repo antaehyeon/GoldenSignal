@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/red_light"
+    android:orientation="vertical"
+    android:weightSum="10">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8">
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="43dp"
+            android:text="당신만을 위한"
+            android:textColor="@color/black"
+            android:textSize="32dp" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView3"
+            android:layout_centerHorizontal="true"
+            android:text="Golden Signal !"
+            android:textColor="@color/black"
+            android:textSize="32dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Golden Signal 앱은  "
+            android:textColor="@color/red_dark"
+            android:textSize="17dp"
+            android:layout_marginTop="37dp"
+            android:id="@+id/textView4"
+            android:layout_below="@+id/textView2"
+            android:layout_centerHorizontal="true" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="귀하의 오토바이 사고를 감지하여"
+            android:textColor="@color/red_dark"
+            android:textSize="17dp"
+            android:layout_below="@+id/textView4"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/textView6" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="119 자동신고 서비스를 제공합니다."
+            android:textColor="@color/red_dark"
+            android:textSize="17dp"
+            android:id="@+id/textView5"
+            android:layout_below="@+id/textView6"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="서비스를 위해 제품과의 연결이 필요합니다"
+            android:textColor="@color/grey_dark"
+            android:textSize="19dp"
+            android:layout_below="@+id/textView5"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="35dp"
+            android:id="@+id/textView7" />
+
+        <ImageView
+            android:layout_width="110dp"
+            android:layout_height="100dp"
+            android:src="@drawable/smartphone"
+            android:layout_marginTop="33dp"
+            android:id="@+id/imageView3"
+            android:layout_below="@+id/textView7"
+            android:layout_alignStart="@+id/textView7"
+            android:layout_marginStart="20dp" />
+
+        <ImageView
+            android:layout_width="110dp"
+            android:layout_height="100dp"
+            android:src="@drawable/bluetooth"
+            android:layout_alignTop="@+id/imageView3"
+            android:layout_alignEnd="@+id/textView7" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        android:layout_weight="2"
+        android:padding="18dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grey_light"
+            android:text="버튼을 누름과 동시에"
+            android:id="@+id/textView8"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grey_light"
+            android:text="자동으로 제품과 연결됩니다"
+            android:layout_below="@+id/textView8"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/textView9" />
+        <Button
+            android:id="@+id/btn_select"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:background="@drawable/button_style"
+            android:padding="12dp"
+            android:text="제품 연결"
+            android:textColor="#000000"
+            android:textSize="18dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
+</LinearLayout>

@@ -11,8 +11,8 @@
     <string name="noti_id" translatable="false">GoldenSignalisanid</string>
 
     <string name="device">Device:</string>
-    <string name="no_device">&lt;Select a device&gt;</string>
-    <string name="select_device"></string>
+    <string name="no_device">&lt;장치를 선택하세요&gt;</string>
+    <string name="select_device">장치를 선택하세요</string>
     <string name="status">Status</string>
     <string name="llsWrite">LinkLossAlert</string>
     <string name="iasWrite">ImmediateAlert</string>

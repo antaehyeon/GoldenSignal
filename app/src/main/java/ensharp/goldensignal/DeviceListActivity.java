@@ -137,9 +137,7 @@ public class DeviceListActivity extends Activity {
                 public void run() {
 					mScanning = false;
                     mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                        
                     cancelButton.setText(R.string.scan);
-
                 }
             }, SCAN_PERIOD);
 
@@ -180,10 +178,30 @@ public class DeviceListActivity extends Activity {
         }
         
         devRssiValues.put(device.getAddress(), rssi);
-        if (!deviceFound&&device.getAddress().equals("C3:D8:44:BB:45:E6")) {
-        	deviceList.add(device);
-            mEmptyList.setVisibility(View.GONE);
-            deviceAdapter.notifyDataSetChanged();
+        if (!deviceFound) {
+            if(device.getAddress().equals("C3:D8:44:BB:45:E6")){
+                deviceList.add(device);
+                mEmptyList.setVisibility(View.GONE);
+                deviceAdapter.notifyDataSetChanged();
+
+                try { Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                Bundle b = new Bundle();
+                b.putString(BluetoothDevice.EXTRA_DEVICE, "C3:D8:44:BB:45:E6");
+                Intent result = new Intent();
+                result.putExtras(b);
+                setResult(Activity.RESULT_OK, result);
+                finish();
+            }
+            else {
+                deviceList.add(device);
+                mEmptyList.setVisibility(View.GONE);
+                deviceAdapter.notifyDataSetChanged();
+            }
         }
     }
 
@@ -219,7 +237,6 @@ public class DeviceListActivity extends Activity {
   
             Bundle b = new Bundle();
             b.putString(BluetoothDevice.EXTRA_DEVICE, deviceList.get(position).getAddress());
-
             Intent result = new Intent();
             result.putExtras(b);
             setResult(Activity.RESULT_OK, result);
