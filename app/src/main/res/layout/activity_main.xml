@@ -29,8 +29,8 @@
 
             <RelativeLayout
                 android:id="@+id/waiting"
-                android:layout_width="280dp"
-                android:layout_height="280dp"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
                 android:layout_gravity="center"
                 android:background="@drawable/circle_style"
                 android:gravity="center">
@@ -43,36 +43,51 @@
                     android:src="@drawable/main_center_image" />
 
                 <!--<ImageView-->
-                    <!--android:id="@+id/beforestart"-->
-                    <!--android:layout_width="200dp"-->
-                    <!--android:layout_height="200dp"-->
-                    <!--android:layout_centerHorizontal="true"-->
-                    <!--android:layout_gravity="bottom"-->
-                    <!--android:gravity="bottom"-->
-                    <!--android:src="@drawable/app_logo_text" />-->
+                <!--android:id="@+id/beforestart"-->
+                <!--android:layout_width="200dp"-->
+                <!--android:layout_height="200dp"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_gravity="bottom"-->
+                <!--android:gravity="bottom"-->
+                <!--android:src="@drawable/app_logo_text" />-->
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/driving"
-                android:layout_width="280dp"
-                android:layout_height="280dp"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
                 android:layout_gravity="center"
                 android:background="@drawable/circle_driving_style"
                 android:gravity="center"
-                android:visibility="invisible">
+              >
 
-                <TextView
-                    android:id="@+id/currentSpeed"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text=""
-                    android:textColor="@android:color/black"
-                    android:textSize="90sp" />
+                    <TextView
+                        android:id="@+id/currentSpeed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:gravity="center"
+                        android:text="0.0"
+                        android:textColor="@android:color/black"
+                        android:textSize="110sp"
+                        android:textStyle="bold"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true" />
+
+
+                    <TextView
+                        android:id="@+id/currentSpeedUnit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="km/h"
+                        android:textColor="@android:color/black"
+                        android:textSize="50sp"
+                        android:layout_below="@+id/currentSpeed"
+                        android:layout_centerHorizontal="true" />
+
             </RelativeLayout>
         </FrameLayout>
     </LinearLayout>
@@ -83,13 +98,23 @@
         android:layout_weight="20"
         android:background="@color/white">
 
+        <Chronometer
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginRight="20dp"
+            android:textColor="@color/white"
+            android:textSize="30sp" />
+
         <ImageView
             android:layout_width="350dp"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:src="@drawable/main_info_text"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:src="@drawable/main_info_text" />
 
     </RelativeLayout>
 

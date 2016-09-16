@@ -5,7 +5,6 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.AssetFileDescriptor;
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.location.Location;
@@ -15,12 +14,12 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
-import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,7 +30,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -44,6 +42,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private Button reset;
     private TextView status;
     private TextView currentSpeed;
+    private TextView averageSpeed;
     private Toolbar toolbar;
     private Chronometer time;
     private Data.onGpsServiceUpdate onGpsServiceUpdate;
@@ -61,7 +60,8 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private RelativeLayout statusLayout;
     private RelativeLayout buttonLayout;
     private RelativeLayout drivingLayout;
-    //private RelativeLayout waitingLayout;
+    double ave_speed;
+    String ave;
 
     private static final int REQUEST_DISCOVERY = 0x1;
     private Handler _handler = new Handler();
@@ -125,12 +125,52 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             }
         };
         mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        //status = (TextView) findViewById(R.id.status);
-        //time = (Chronometer) findViewById(R.id.time);
+
+
+        ave_speed = data.getAverageSpeedMotion();
+        ave = new String(String.format("%.0f", ave_speed * Speed_Multiplier) + Speed_Units);
+
         currentSpeed = (TextView) findViewById(R.id.currentSpeed);
-        statusLayout = (RelativeLayout) findViewById(R.id.status_layout);
-        //statusLayout.setVisibility(View.VISIBLE);
+        //averageSpeed = (TextView) findViewById(R.id.averageSpeed);
+        //statusLayout = (RelativeLayout) findViewById(R.id.status_layout);
         drivingLayout.setVisibility(View.INVISIBLE);
+        time = (Chronometer) findViewById(R.id.time);
+
+        time.setText("00:00:00");
+        time.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            boolean isPair = true;
+
+            @Override
+            public void onChronometerTick(Chronometer chrono) {
+                long time;
+                if (data.isRunning()) {
+                    time = SystemClock.elapsedRealtime() - chrono.getBase();
+                    data.setTime(time);
+                } else {
+                    time = data.getTime();
+                }
+
+                int h = (int) (time / 3600000);
+                int m = (int) (time - h * 3600000) / 60000;
+                int s = (int) (time - h * 3600000 - m * 60000) / 1000;
+                String hh = h < 10 ? "0" + h : h + "";
+                String mm = m < 10 ? "0" + m : m + "";
+                String ss = s < 10 ? "0" + s : s + "";
+                chrono.setText(hh + ":" + mm + ":" + ss);
+
+                if (data.isRunning()) {
+                    chrono.setText(hh + ":" + mm + ":" + ss);
+                } else {
+                    if (isPair) {
+                        isPair = false;
+                        chrono.setText(hh + ":" + mm + ":" + ss);
+                    } else {
+                        isPair = true;
+                        chrono.setText("");
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -171,48 +211,39 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 Toast.makeText(this, "단말기 설정에서 '위치 서비스'사용을 허용해주세요", Toast.LENGTH_SHORT).show();
             } else {
                 if (_bluetooth.isEnabled()) {
-                    // bluetoothPair();
+                    //averageSpeed.setText(ave);
                     start.setText("주행 종료");
-//                time.setBase(SystemClock.elapsedRealtime() - data.getTime());
-//                time.start();
+                    time.setBase(SystemClock.elapsedRealtime() - data.getTime());
+                    time.start();
                     data.setFirstTime(true);
                     isSendMMS = false;
                     startService(new Intent(getBaseContext(), GpsServices.class));
                     Toast.makeText(this, "주행을 시작합니다", Toast.LENGTH_SHORT).show();
                     data.setRunning(true);
                     drivingLayout.setVisibility(View.VISIBLE);
-                    SpannableString s = new SpannableString(String.format("%.1f", mySpeed * Speed_Multiplier) + Speed_Units);
-                    s.setSpan(new RelativeSizeSpan(0.25f), s.length() - 3, s.length(), 0);
+                    SpannableString s = new SpannableString(String.format("%.1f", mySpeed * Speed_Multiplier));
                     currentSpeed.setText(s);
                     //reset.setVisibility(View.INVISIBLE);
-                    soundOn=false;
+                    soundOn = false;
                 } else {
                     Toast.makeText(this, "블루투스 연결이 불가합니다", Toast.LENGTH_SHORT).show();
                 }
             }
         } else {
-            //start.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_play));
             start.setText("주행 시작");
             data.setRunning(false);
-            //status.setText("");
-//            statusLayout.setVisibility(View.GONE);
+            time.stop();
+            time.setText("00:00:00");
+            //averageSpeed.setText("");
+            data = new Data(onGpsServiceUpdate);
             drivingLayout.setVisibility(View.INVISIBLE);
             Toast.makeText(this, "서비스를 종료합니다", Toast.LENGTH_SHORT).show();
             isSendMMS = false;
             stopService(new Intent(getBaseContext(), GpsServices.class));
             //_bluetooth.disable();
-//            reset.setVisibility(View.VISIBLE);
-            soundOn=false;
+            soundOn = false;
         }
     }
-
-
-//    public void onResetClick(View v) {
-//        resetData();
-//        stopService(new Intent(getBaseContext(), GpsServices.class));
-//    }
-
-
 
 
     @Override
@@ -260,6 +291,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     @Override
     public void onLocationChanged(Location location) {
         //Toast.makeText(this, "onLocationChanged 실행", Toast.LENGTH_SHORT).show();
+        SpannableString s;
         if (location.hasAccuracy()) {
             if (firstfix) {
                 //drivingLayout.setVisibility(View.VISIBLE);
@@ -278,8 +310,12 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             if (location.hasSpeed()) {
                 myLocation = location;
                 mySpeed = location.getSpeed();
-                SpannableString s = new SpannableString(String.format("%.1f", mySpeed * Speed_Multiplier) + Speed_Units);
-                s.setSpan(new RelativeSizeSpan(0.25f), s.length() - 3, s.length(), 0);
+                if(mySpeed>=100.0) {
+                    s = new SpannableString(String.format("%.0f", mySpeed * Speed_Multiplier));
+                } else {
+                    s = new SpannableString(String.format("%.1f", mySpeed * Speed_Multiplier));
+                }
+                //s.setSpan(new RelativeSizeSpan(0.25f), s.length() - 3, s.length(), 0);
                 currentSpeed.setText(s);
                 //Toast.makeText(this, location.getLatitude() + "   " + location.getLongitude() + "   " + getAddress(location.getLatitude(), location.getLongitude()), Toast.LENGTH_SHORT).show();
             }
@@ -343,15 +379,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 break;
         }
     }
-
-//    public void resetData() {
-//        //start.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_play));
-//        start.setText("주행 시작");
-//        reset.setVisibility(View.INVISIBLE);
-//        time.stop();
-//        time.setText("00:00:00");
-//        data = new Data(onGpsServiceUpdate);
-//    }
 
     public static Data getData() {
         return data;

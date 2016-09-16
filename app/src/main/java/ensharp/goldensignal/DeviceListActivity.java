@@ -184,11 +184,6 @@ public class DeviceListActivity extends Activity {
                 mEmptyList.setVisibility(View.GONE);
                 deviceAdapter.notifyDataSetChanged();
 
-                try { Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
                 mBluetoothAdapter.stopLeScan(mLeScanCallback);
                 Bundle b = new Bundle();
                 b.putString(BluetoothDevice.EXTRA_DEVICE, "C3:D8:44:BB:45:E6");

@@ -112,6 +112,8 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                         //Disconnect button pressed
                         if (mDevice != null) {
                             mService.disconnect();
+                            Intent intent = new Intent(BluetoothRegister.this, MainActivity.class);
+                            BluetoothRegister.this.startActivity(intent);
                         }
                     }
                 }
