@@ -29,9 +29,9 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,9 +70,10 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
     CountDownTimer countDownTimer;
     Vibrator vibrator;
     MediaPlayer mp;
-    boolean soundOn;
-    ImageView disconnectedView;
-    ImageView connectedView;
+    public static boolean soundOn = false;
+    private RelativeLayout checkedLayout;
+    private RelativeLayout beforeConnectTxt;
+    private RelativeLayout afterConnectTxt;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,6 +88,10 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
         }
 
         btnConnectDisconnect = (Button) findViewById(R.id.btn_select);
+        checkedLayout = (RelativeLayout) findViewById(R.id.checkedLayout);
+        beforeConnectTxt = (RelativeLayout) findViewById(R.id.beforeConnectTxt);
+        afterConnectTxt = (RelativeLayout) findViewById(R.id.afterConnectTxt);
+
         pref = new SharedPreferences(this);
 
         service_init();
@@ -108,7 +113,6 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                         Intent newIntent = new Intent(BluetoothRegister.this, DeviceListActivity.class);
                         startActivityForResult(newIntent, REQUEST_SELECT_DEVICE);
                     } else if (btnConnectDisconnect.getText().equals("시작하기")) {
-
                         Intent intent = new Intent(BluetoothRegister.this, MainActivity.class);
                         BluetoothRegister.this.startActivity(intent);
                     } else {
@@ -399,14 +403,10 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                     public void run() {
                         String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
                         Log.d(TAG, "UART_CONNECT_MSG");
-//                        disconnectedView.setVisibility(View.INVISIBLE);
-//                        connectedView.setVisibility(View.VISIBLE);
                         btnConnectDisconnect.setText("시작하기");
-//                        edtMessage.setEnabled(true);
-//                        btnSend.setEnabled(true);
-//                        ((TextView) findViewById(R.id.deviceName)).setText(mDevice.getName() + " - ready");
-//                        listAdapter.add("[" + currentDateTimeString + "] Connected to: " + mDevice.getName());
-//                        messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
+                        checkedLayout.setVisibility(View.VISIBLE);
+                        beforeConnectTxt.setVisibility(View.INVISIBLE);
+                        afterConnectTxt.setVisibility(View.VISIBLE);
                         mState = UART_PROFILE_CONNECTED;
                     }
                 });
@@ -419,12 +419,9 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                         String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
                         Log.d(TAG, "UART_DISCONNECT_MSG");
                         btnConnectDisconnect.setText("제품 연결");
-//                        connectedView.setVisibility(View.INVISIBLE);
-//                        disconnectedView.setVisibility(View.VISIBLE);
-//                        edtMessage.setEnabled(false);
-//                        btnSend.setEnabled(false);
-//                        ((TextView) findViewById(R.id.deviceName)).setText("Not Connected");
-//                        listAdapter.add("[" + currentDateTimeString + "] Disconnected to: " + mDevice.getName());
+                        checkedLayout.setVisibility(View.INVISIBLE);
+                        afterConnectTxt.setVisibility(View.INVISIBLE);
+                        beforeConnectTxt.setVisibility(View.VISIBLE);
                         mState = UART_PROFILE_DISCONNECTED;
                         mService.close();
                         //setUiState();
@@ -445,7 +442,9 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                 runOnUiThread(new Runnable() {
                     public void run() {
                         try {
-                            initiateAlertDialog();
+                            if (soundOn) {
+                                initiateAlertDialog();
+                            }
                         } catch (Exception e) {
                             Log.e(TAG, e.toString());
                         }
