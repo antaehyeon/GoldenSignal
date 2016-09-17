@@ -1,6 +1,7 @@
 package ensharp.goldensignal;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -11,6 +12,8 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Configuration;
+import android.location.Address;
+import android.location.Geocoder;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -19,6 +22,8 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Vibrator;
 import android.support.v4.content.LocalBroadcastManager;
+import android.telephony.SmsManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -33,7 +38,10 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedChangeListener {
     private static final int REQUEST_SELECT_DEVICE = 1;
@@ -43,7 +51,7 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
     private static final int UART_PROFILE_CONNECTED = 20;
     private static final int UART_PROFILE_DISCONNECTED = 21;
     private static final int STATE_OFF = 10;
-
+    SharedPreferences pref;
     TextView mRemoteRssiVal;
     RadioGroup mRg;
     private int mState = UART_PROFILE_DISCONNECTED;
@@ -71,20 +79,16 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth_guide);
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
-//        disconnectedView = (ImageView) findViewById(R.id.disconnectedView);
-//        connectedView = (ImageView) findViewById(R.id.connectedView);
+
         if (mBtAdapter == null) {
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
-        //messageListView = (ListView) findViewById(R.id.listMessage);
-//        listAdapter = new ArrayAdapter<String>(this, R.layout.message_detail);
-//        messageListView.setAdapter(listAdapter);
-//        messageListView.setDivider(null);
+
         btnConnectDisconnect = (Button) findViewById(R.id.btn_select);
-        //btnSend = (Button) findViewById(R.id.sendButton);
-        //edtMessage = (EditText) findViewById(R.id.sendText);
+        pref = new SharedPreferences(this);
+
         service_init();
 
 
@@ -103,12 +107,11 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
 
                         Intent newIntent = new Intent(BluetoothRegister.this, DeviceListActivity.class);
                         startActivityForResult(newIntent, REQUEST_SELECT_DEVICE);
-                    } else if(btnConnectDisconnect.getText().equals("시작하기")) {
+                    } else if (btnConnectDisconnect.getText().equals("시작하기")) {
 
                         Intent intent = new Intent(BluetoothRegister.this, MainActivity.class);
                         BluetoothRegister.this.startActivity(intent);
-                    }
-                    else {
+                    } else {
                         //Disconnect button pressed
                         if (mDevice != null) {
                             mService.disconnect();
@@ -119,35 +122,6 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                 }
             }
         });
-
-
-//        // Handle Send button
-//        btnSend.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                EditText editText = (EditText) findViewById(R.id.sendText);
-//                String message = editText.getText().toString();
-//                byte[] value;
-//
-//                try {
-//                    //send data to service
-//                    value = message.getBytes("UTF-8");
-//                    mService.writeRXCharacteristic(value);
-//                    //Update the log with time stamp
-//                    String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-//                    listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
-//                    messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
-//                    edtMessage.setText("");
-//                } catch (UnsupportedEncodingException e) {
-//                    // TODO Auto-generated catch block
-//                    e.printStackTrace();
-//                }
-//
-//            }
-//        });
-
-        // Set initial UI state
-
     }
 
     //UART service connected/disconnected
@@ -171,11 +145,8 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
 
     private Handler mHandler = new Handler() {
         @Override
-
         //Handler events that received from UART service
         public void handleMessage(Message msg) {
-
-
         }
     };
 
@@ -199,6 +170,26 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                 mp.stop();
                 mCustomDialog.dismiss();
 
+                //SMS 및 MMS 보내기
+                if (!MainActivity.isSendMMS) {
+                    //if (!isSendMMS && (0.01 <= mySpeed) && (mySpeed <= 1.0)) { // 속도 범위 추가 (상황에 따라서 다시 바꿀 필요 있음
+                    sendSMS("01049122194", reportContent(), false);
+                    for (int i = 0; i < 3; i++) {
+                        String phoneNumber = pref.getValue(Integer.toString(i), "no", "phoneNum");
+                        if (!phoneNumber.equals("no")) {
+                            sendSMS(phoneNumber,
+                                    "방금 전 " + pref.getValue("이름", "", "user_info") + " 님이 오토바이 사고를 당하셨습니다." + '\n' +
+                                            "귀하께서 보호자로 등록되어 119에서 확인전화가 갈 수 있음을 알립니다." + '\n' + '\n' +
+                                            "이 문자는 자동신고 서비스에 의해 발송되었습니다."
+                                    , true);
+                        }
+                    }
+                    MainActivity.isSendMMS = true;
+                } else {
+                    Toast.makeText(MainActivity.mContext, "자동신고 문자가 발송되지 않았습니다.", Toast.LENGTH_SHORT).show();
+                }
+
+                //아두이노 LED 신호 보내기
                 String message = "1";
                 byte[] value;
                 try {
@@ -216,6 +207,140 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
 
             }
         };
+    }
+
+    public String reportContent() {
+
+        String total;
+        TelephonyManager telManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        String myPhoneNumber = telManager.getLine1Number();
+        String name = pref.getValue("이름", "", "user_info");
+        String age = pref.getValue("나이", "", "user_info");
+        String sex;
+        String rhType;
+        String bloodType;
+
+        if (pref.getValue("남", true, "user_info")) {
+            sex = "남자";
+        } else {
+            sex = "여자";
+        }
+
+        if (pref.getValue("RH+", true, "user_info")) {
+            rhType = "RH+";
+        } else {
+            rhType = "RH-";
+        }
+
+        if (pref.getValue("A", true, "user_info")) {
+            bloodType = "A형";
+        } else if (pref.getValue("B", true, "user_info")) {
+            bloodType = "B형";
+        } else if (pref.getValue("AB", true, "user_info")) {
+            bloodType = "AB형";
+        } else {
+            bloodType = "O형";
+        }
+
+        total = "오토바이 사고발생" + '\n' +
+                "위도 : " + MainActivity.myLocation.getLatitude() + '\n' +
+                "경도 : " + MainActivity.myLocation.getLongitude() + '\n' +
+                "주소 : " + getAddress(MainActivity.mContext, MainActivity.myLocation.getLatitude(), MainActivity.myLocation.getLongitude()) + '\n' +
+                "사고자 : " + name + '\n' +
+                "연락처 : " + myPhoneNumber + '\n' +
+                sex + ", " + age + ", " + rhType + ", " + bloodType + '\n' +
+                "보호자 연락처 목록" + '\n' +
+                "1순위 : " + pref.getValue(Integer.toString(0), "-", "phoneNum") + '\n' +
+                "2순위 : " + pref.getValue(Integer.toString(1), "-", "phoneNum") + '\n' +
+                "3순위 : " + pref.getValue(Integer.toString(2), "-", "phoneNum") + '\n' + '\n' +
+                "이 문자는 자동신고 서비스에 의해 발송되었습니다.";
+
+        return total;
+    }
+
+    public static String getAddress(Context mContext, double lat, double lng) {
+        String nowAddress = "현재 위치를 확인 할 수 없습니다.";
+        Geocoder geocoder = new Geocoder(mContext, Locale.KOREA);
+        List<Address> address;
+        try {
+            if (geocoder != null) {
+                // 한 좌표에 대해 두개 이상의 이름이 존재할 확률이 있기때문에, 주소배열을 리턴받기 위해 최대갯수 설정
+                address = geocoder.getFromLocation(lat, lng, 1);
+
+                if (address != null && address.size() > 0) {
+                    // 주소를 받아 오는 부분
+                    String currentLocationAddress = address.get(0).getAddressLine(0).toString();
+                    nowAddress = currentLocationAddress;
+                }
+            }
+        } catch (IOException e) {
+            Toast.makeText(MainActivity.mContext, "주소를 가져 올 수 없습니다.", Toast.LENGTH_SHORT).show();
+
+            e.printStackTrace();
+        }
+        return nowAddress;
+
+    }
+
+    public void sendSMS(String smsNumber, String total, boolean type) {
+        PendingIntent sentIntent = PendingIntent.getBroadcast(this, 0, new Intent("SMS_SENT_ACTION"), 0);
+        PendingIntent deliveredIntent = PendingIntent.getBroadcast(this, 0, new Intent("SMS_DELIVERED_ACTION"), 0);
+
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(MainActivity.mContext, "SMS 전송 완료", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        Toast.makeText(MainActivity.mContext, "SMS 전송 실패", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        Toast.makeText(MainActivity.mContext, "서비스 지역이 아닙니다", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        Toast.makeText(MainActivity.mContext, "무선(Radio)가 꺼져있습니다", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        Toast.makeText(MainActivity.mContext, "PDU Null", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter("SMS_SENT_ACTION"));
+
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(MainActivity.mContext, "SMS 도착완료", Toast.LENGTH_SHORT).show();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Toast.makeText(MainActivity.mContext, "SMS 도착안됨", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter("SMS_DELIVERED_ACTION"));
+
+        SmsManager mSmsManager = SmsManager.getDefault();
+        if (!MainActivity.isSendMMS) {
+            // 지정 연락처 사람에게 보내는 신고
+            if (type) {
+                //String phoneNumber = pref.getValue(Integer.toString(i), "no", "phoneNum");
+                ArrayList<String> messageParts = mSmsManager.divideMessage(total);
+                mSmsManager.sendMultipartTextMessage(smsNumber, null, messageParts, null, null);
+                Toast.makeText(this, "보호자에게 전송완료.", Toast.LENGTH_SHORT).show();
+
+
+                //mSmsManager.sendTextMessage(smsNumber, null, total, sentIntent, deliveredIntent);
+            } else {
+                // 지정 글자수 넘어갔을때 mms로 보내도록 119 로 보내는 신고//
+                ArrayList<String> messageParts = mSmsManager.divideMessage(total);
+                mSmsManager.sendMultipartTextMessage(smsNumber, null, messageParts, null, null);
+                Toast.makeText(this, "119 신고완료.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     public void playSound() {

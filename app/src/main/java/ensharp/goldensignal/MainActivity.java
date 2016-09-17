@@ -155,8 +155,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         ave = new String(String.format("%.0f", ave_speed * Speed_Multiplier) + "  "+Speed_Units);
 
         currentSpeed = (TextView) findViewById(R.id.currentSpeed);
-        //averageSpeed = (TextView) findViewById(R.id.averageSpeed);
-        //statusLayout = (RelativeLayout) findViewById(R.id.status_layout);
         drivingLayout.setVisibility(View.INVISIBLE);
         time.setText("00:00:00");
         time.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
