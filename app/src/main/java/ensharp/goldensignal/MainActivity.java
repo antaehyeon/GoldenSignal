@@ -11,12 +11,9 @@ import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -59,7 +56,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     public static float mySpeed;
 
     private RelativeLayout drivingLayout;
-    double ave_speed;
+    public static double ave_speed;
     String ave;
 
     private static final int REQUEST_DISCOVERY = 0x1;
@@ -77,12 +74,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
     private static final int MILLISINFUTURE = 11 * 2000;
     private static final int COUNT_DOWN_INTERVAL = 1000;
-    int count;
-    private CustomDialog mCustomDialog;
-    CountDownTimer countDownTimer;
-    Vibrator vibrator;
-    MediaPlayer mp;
-    boolean soundOn;
 
     private TextView averageSpeedName;
     private TextView averageSpeed;
@@ -143,7 +134,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             public void update() {
                 //Set the average
                 String ave;
-                double ave_speed;
                 ave_speed = data.getAverageSpeed();
                 ave = String.format("%.1f", ave_speed * Speed_Multiplier);
                 //Toast.makeText(MainActivity.this, "평균속도 : " + ave_speed + " 변환형 : " + ave, Toast.LENGTH_SHORT).show();
@@ -248,7 +238,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                     waitingInfoLayout.setVisibility(View.INVISIBLE);
                     SpannableString s = new SpannableString(String.format("%.1f", mySpeed * Speed_Multiplier));
                     currentSpeed.setText(s);
-                    soundOn = false;
                 } else {
                     Toast.makeText(this, "블루투스 연결이 불가합니다", Toast.LENGTH_SHORT).show();
                 }
@@ -268,7 +257,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             isSendMMS = false;
             stopService(new Intent(getBaseContext(), GpsServices.class));
             //_bluetooth.disable();
-            soundOn = false;
         }
     }
 
@@ -348,19 +336,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             }
         }
     }
-
-//    public void occurAccident()
-//    {
-//        double myVelocity = mySpeed * Speed_Multiplier;
-//        if(myVelocity>=0.0&&myVelocity<=5.0)
-//        {
-//            //call911(myLocation);
-//        }
-//        else
-//            //noAccident;
-//
-//    }
-
 
     public void onGpsStatusChanged(int event) {
         switch (event) {

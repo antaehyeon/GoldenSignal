@@ -175,7 +175,7 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                 mCustomDialog.dismiss();
 
                 //SMS 및 MMS 보내기
-                if (!MainActivity.isSendMMS) {
+                if (MainActivity.isSendMMS) {
                     //if (!isSendMMS && (0.01 <= mySpeed) && (mySpeed <= 1.0)) { // 속도 범위 추가 (상황에 따라서 다시 바꿀 필요 있음
                     sendSMS("01049122194", reportContent(), false);
                     for (int i = 0; i < 3; i++) {
@@ -188,7 +188,7 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                                     , true);
                         }
                     }
-                    MainActivity.isSendMMS = true;
+                    //MainActivity.isSendMMS = false;
                 } else {
                     Toast.makeText(MainActivity.mContext, "자동신고 문자가 발송되지 않았습니다.", Toast.LENGTH_SHORT).show();
                 }
@@ -247,9 +247,9 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
         }
 
         total = "오토바이 사고발생" + '\n' +
-                "위도 : " + MainActivity.myLocation.getLatitude() + '\n' +
-                "경도 : " + MainActivity.myLocation.getLongitude() + '\n' +
-                "주소 : " + getAddress(MainActivity.mContext, MainActivity.myLocation.getLatitude(), MainActivity.myLocation.getLongitude()) + '\n' +
+//                "위도 : " + MainActivity.myLocation.getLatitude() + '\n' +
+//                "경도 : " + MainActivity.myLocation.getLongitude() + '\n' +
+//                "주소 : " + getAddress(MainActivity.mContext, MainActivity.myLocation.getLatitude(), MainActivity.myLocation.getLongitude()) + '\n' +
                 "사고자 : " + name + '\n' +
                 "연락처 : " + myPhoneNumber + '\n' +
                 sex + ", " + age + ", " + rhType + ", " + bloodType + '\n' +
@@ -328,7 +328,7 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
         }, new IntentFilter("SMS_DELIVERED_ACTION"));
 
         SmsManager mSmsManager = SmsManager.getDefault();
-        if (!MainActivity.isSendMMS) {
+        if (MainActivity.isSendMMS) {
             // 지정 연락처 사람에게 보내는 신고
             if (type) {
                 //String phoneNumber = pref.getValue(Integer.toString(i), "no", "phoneNum");
@@ -385,7 +385,21 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                     countDownTimer.cancel();
                     mp.stop();
                     mCustomDialog.dismiss();
-
+                    //아두이노 다시 원래대로 돌아오게 신호 보내기
+                    String message = "9";
+                    byte[] value;
+                    try {
+                        //send data to service
+                        value = message.getBytes("UTF-8");
+                        mService.writeRXCharacteristic(value);
+                        //Update the log with time stamp
+                        //String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+                        //listAdapter.add("[" + currentDateTimeString + "] TX: " + message);
+                        //messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
+                    } catch (UnsupportedEncodingException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
             };
 
