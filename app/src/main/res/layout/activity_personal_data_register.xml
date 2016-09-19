@@ -66,7 +66,8 @@
             android:layout_weight="0.7"
             android:layout_gravity="center"
             android:hint="이름"
-            android:background="@null"/>
+            android:background="@null"
+            android:maxLines="1"/>
     </LinearLayout>
 
     <LinearLayout
@@ -148,7 +149,8 @@
             android:ems="10"
             android:layout_toEndOf="@+id/btn_send"
             android:hint="나이"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:maxLines="1"/>
     </LinearLayout>
 
 
