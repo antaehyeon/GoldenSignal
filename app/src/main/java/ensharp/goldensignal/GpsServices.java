@@ -10,7 +10,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.location.GpsStatus.Listener;
+import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -18,7 +18,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 
-public class GpsServices extends Service implements LocationListener, Listener {
+public class GpsServices extends Service implements LocationListener, GpsStatus.Listener {
     private LocationManager mLocationManager;
 
     Location lastlocation = new Location("last");

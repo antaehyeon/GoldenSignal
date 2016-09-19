@@ -106,23 +106,8 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                     Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                     startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
                 } else {
-                    if (btnConnectDisconnect.getText().equals("제품 연결")) {
-
-                        //Connect button pressed, open DeviceListActivity class, with popup windows that scan for devices
-
-                        Intent newIntent = new Intent(BluetoothRegister.this, DeviceListActivity.class);
-                        startActivityForResult(newIntent, REQUEST_SELECT_DEVICE);
-                    } else if (btnConnectDisconnect.getText().equals("시작하기")) {
-                        Intent intent = new Intent(BluetoothRegister.this, MainActivity.class);
-                        BluetoothRegister.this.startActivity(intent);
-                    } else {
-                        //Disconnect button pressed
-                        if (mDevice != null) {
-                            mService.disconnect();
-                            Intent intent = new Intent(BluetoothRegister.this, MainActivity.class);
-                            BluetoothRegister.this.startActivity(intent);
-                        }
-                    }
+                    Intent newIntent = new Intent(BluetoothRegister.this, DeviceListActivity.class);
+                    startActivityForResult(newIntent, REQUEST_SELECT_DEVICE);
                 }
             }
         });
@@ -209,6 +194,20 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                     e.printStackTrace();
                 }
 
+                MainActivity.start.setText("주행 시작");
+                MainActivity.data.setRunning(false);
+                MainActivity.time.stop();
+                MainActivity.time.setText("00:00:00");
+                MainActivity.averageSpeed.setText("");
+                MainActivity.data = new Data(MainActivity.onGpsServiceUpdate);
+                BluetoothRegister.soundOn = false;
+                MainActivity.drivingLayout.setVisibility(View.INVISIBLE);
+                MainActivity.drivingInfoLayout.setVisibility(View.INVISIBLE);
+                MainActivity.waitingInfoLayout.setVisibility(View.VISIBLE);
+                Toast.makeText(MainActivity.mContext, "서비스를 종료합니다", Toast.LENGTH_SHORT).show();
+                MainActivity.isSendMMS = false;
+                stopService(new Intent(getBaseContext(), GpsServices.class));
+                MainActivity.isGetGps = false;
             }
         };
     }
@@ -223,6 +222,9 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
         String sex;
         String rhType;
         String bloodType;
+        double latitude;
+        double longitude;
+        String address;
 
         if (pref.getValue("남", true, "user_info")) {
             sex = "남자";
@@ -246,10 +248,20 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
             bloodType = "O형";
         }
 
+        if (MainActivity.isGetGps) {
+            latitude = MainActivity.myLocation.getLatitude();
+            longitude = MainActivity.myLocation.getLongitude();
+            address = getAddress(MainActivity.mContext, MainActivity.myLocation.getLatitude(), MainActivity.myLocation.getLongitude());
+        } else {
+            latitude = 0.0;
+            longitude = 0.0;
+            address = "-";
+        }
+
         total = "오토바이 사고발생" + '\n' +
-//                "위도 : " + MainActivity.myLocation.getLatitude() + '\n' +
-//                "경도 : " + MainActivity.myLocation.getLongitude() + '\n' +
-//                "주소 : " + getAddress(MainActivity.mContext, MainActivity.myLocation.getLatitude(), MainActivity.myLocation.getLongitude()) + '\n' +
+                "위도 : " + latitude + '\n' +
+                "경도 : " + longitude + '\n' +
+                "주소 : " + address + '\n' +
                 "사고자 : " + name + '\n' +
                 "연락처 : " + myPhoneNumber + '\n' +
                 sex + ", " + age + ", " + rhType + ", " + bloodType + '\n' +
@@ -334,7 +346,7 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                 //String phoneNumber = pref.getValue(Integer.toString(i), "no", "phoneNum");
                 ArrayList<String> messageParts = mSmsManager.divideMessage(total);
                 mSmsManager.sendMultipartTextMessage(smsNumber, null, messageParts, null, null);
-                Toast.makeText(this, "보호자에게 전송완료.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "보호자에게 문자전송이 완료되었습니다.", Toast.LENGTH_SHORT).show();
 
 
                 //mSmsManager.sendTextMessage(smsNumber, null, total, sentIntent, deliveredIntent);
@@ -342,7 +354,7 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                 // 지정 글자수 넘어갔을때 mms로 보내도록 119 로 보내는 신고//
                 ArrayList<String> messageParts = mSmsManager.divideMessage(total);
                 mSmsManager.sendMultipartTextMessage(smsNumber, null, messageParts, null, null);
-                Toast.makeText(this, "119 신고완료.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "119 문자신고가 완료되었습니다.", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -417,11 +429,21 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
                     public void run() {
                         String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
                         Log.d(TAG, "UART_CONNECT_MSG");
-                        btnConnectDisconnect.setText("시작하기");
+                        btnConnectDisconnect.setText("연결 완료");
                         checkedLayout.setVisibility(View.VISIBLE);
                         beforeConnectTxt.setVisibility(View.INVISIBLE);
                         afterConnectTxt.setVisibility(View.VISIBLE);
                         mState = UART_PROFILE_CONNECTED;
+                        btnConnectDisconnect.setEnabled(false);
+
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Intent intent = new Intent(BluetoothRegister.this, MainActivity.class);
+                                BluetoothRegister.this.startActivity(intent);
+                            }
+                        }, 1250);
                     }
                 });
             }

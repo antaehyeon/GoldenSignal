@@ -37,12 +37,12 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private SharedPreferences sharedPreferences;
     private LocationManager mLocationManager;
     public static Data data;
-    private Button start;
+    public static Button start;
     private Button reset;
     private TextView status;
     private TextView currentSpeed;
     private Toolbar toolbar;
-    private Data.onGpsServiceUpdate onGpsServiceUpdate;
+    public static Data.onGpsServiceUpdate onGpsServiceUpdate;
 
     private boolean firstfix;
 
@@ -55,7 +55,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     public static Location myLocation;
     public static float mySpeed;
 
-    private RelativeLayout drivingLayout;
+    public static RelativeLayout drivingLayout;
     public static double ave_speed;
     String ave;
 
@@ -76,11 +76,12 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private static final int COUNT_DOWN_INTERVAL = 1000;
 
     private TextView averageSpeedName;
-    private TextView averageSpeed;
+    public static TextView averageSpeed;
     private TextView timeName;
-    private Chronometer time;
-    private LinearLayout drivingInfoLayout;
-    private RelativeLayout waitingInfoLayout;
+    public static Chronometer time;
+    public static LinearLayout drivingInfoLayout;
+    public static RelativeLayout waitingInfoLayout;
+    public static boolean isGetGps = false;
 
 
     @Override
@@ -113,7 +114,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Golden Signal");
+        getSupportActionBar().setTitle("홈");
         start = (Button) findViewById(R.id.start);
         //start.setVisibility(View.INVISIBLE); --> 이거 다시 주석해제
         //reset = (Button) findViewById(R.id.reset);
@@ -134,17 +135,14 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             public void update() {
                 //Set the average
                 String ave;
+                isGetGps = true;
                 ave_speed = data.getAverageSpeed();
-                ave = String.format("%.1f", ave_speed * Speed_Multiplier);
+                ave = String.format("%.1f", ave_speed * Speed_Multiplier) + " " + Speed_Units;
                 //Toast.makeText(MainActivity.this, "평균속도 : " + ave_speed + " 변환형 : " + ave, Toast.LENGTH_SHORT).show();
                 averageSpeed.setText(ave);
             }
         };
         mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
-
-        ave_speed = data.getAverageSpeedMotion();
-        ave = new String(String.format("%.0f", ave_speed * Speed_Multiplier) + "  " + Speed_Units);
 
         currentSpeed = (TextView) findViewById(R.id.currentSpeed);
         drivingLayout.setVisibility(View.INVISIBLE);
@@ -256,6 +254,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             Toast.makeText(this, "서비스를 종료합니다", Toast.LENGTH_SHORT).show();
             isSendMMS = false;
             stopService(new Intent(getBaseContext(), GpsServices.class));
+            isGetGps = false;
             //_bluetooth.disable();
         }
     }
@@ -363,9 +362,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                     //reset.setVisibility(View.INVISIBLE);
                     //status.setText(getResources().getString(R.string.waiting_for_fix));
                     //statusLayout.setVisibility(View.VISIBLE);
-                    if (data.isRunning()) {
-                        Toast.makeText(this, "현재 GPS 확인이 불가합니다", Toast.LENGTH_SHORT).show();
-                    }
+//                    if (data.isRunning()) {
+//                        Toast.makeText(this, "현재 GPS 확인이 불가합니다", Toast.LENGTH_SHORT).show();
+//                    }
+                    isGetGps = false;
                     //drivingLayout.setVisibility(View.INVISIBLE); --> 이거 다시 주석해제
                     //data.setRunning(false); --> 이거 해제해야함
                     firstfix = true;

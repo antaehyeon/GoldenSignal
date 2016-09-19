@@ -62,9 +62,11 @@ public class Data {
     }
 
     public double getAverageSpeed(){
-        double average = (distanceM / time); // units: m/s
+
+        double average = (distanceM / (time/1000)); // units: m/s
 
         if (time > 0){
+            //Toast.makeText(MainActivity.mContext,"평균속도는 "+average,Toast.LENGTH_SHORT).show();
             return average;
 
         }else{
@@ -78,7 +80,8 @@ public class Data {
         if (motionTime < 0){
             return 0;
         }else{
-            return ((distanceM / (time - timeStopped) )) ; // units: m/s
+            //Toast.makeText(MainActivity.mContext,"평균속도는 "+(distanceM / ((time - timeStopped)/1000)),Toast.LENGTH_SHORT).show();
+            return (distanceM / ((time - timeStopped)/1000)); // units: m/s
 
         }
     }
