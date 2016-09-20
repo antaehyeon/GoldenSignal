@@ -591,12 +591,12 @@ public class BluetoothRegister extends Activity implements RadioGroup.OnCheckedC
             case REQUEST_ENABLE_BT:
                 // When the request to enable Bluetooth returns
                 if (resultCode == Activity.RESULT_OK) {
-                    Toast.makeText(this, "Bluetooth has turned on ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "블루투스가 활성화되었습니다.", Toast.LENGTH_SHORT).show();
 
                 } else {
                     // User did not enable Bluetooth or an error occurred
                     Log.d(TAG, "BT not enabled");
-                    Toast.makeText(this, "Problem in BT Turning ON ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "앱을 종료합니다.", Toast.LENGTH_SHORT).show();
                     finish();
                 }
                 break;
