@@ -43,7 +43,7 @@ public class GpsServices extends Service implements LocationListener, GpsStatus.
         updateNotification(false);
 
         mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        mLocationManager.addGpsStatusListener( this);
+        mLocationManager.addGpsStatusListener(this);
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
     }
@@ -85,12 +85,13 @@ public class GpsServices extends Service implements LocationListener, GpsStatus.
     public void updateNotification(boolean asData){
         Notification.Builder builder = new Notification.Builder(getBaseContext())
                 .setContentTitle(getString(R.string.running))
+                .setSmallIcon(R.drawable.app_logo_red)
                 .setContentIntent(contentIntent);
 
         if(asData){
             builder.setContentText("자동신고서비스가 활성화되어 있습니다.");
         }else{
-            builder.setContentText(String.format(getString(R.string.notification), '-', '-'));
+            builder.setContentText("자동신고서비스가 활성화되어 있습니다.");
         }
         Notification notification = builder.build();
         startForeground(R.string.noti_id, notification);

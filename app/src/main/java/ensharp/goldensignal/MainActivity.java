@@ -125,7 +125,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         waitingInfoLayout = (RelativeLayout) findViewById(R.id.waitingInfoLayout);
 
         //reset.setVisibility(View.VISIBLE);
-        Speed_Multiplier = 3.6;
+        Speed_Multiplier = 3.5;
         Distance_Long = " Km";
         Distance_Short = " m";
         Speed_Units = " km/h";
